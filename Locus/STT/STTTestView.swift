@@ -73,9 +73,7 @@ struct STTTestView: View {
             .padding(.vertical)
             .navigationTitle("Speech-to-Text")
             .task {
-                if let path = modelManager.sttModelPath {
-                    sttManager.configure(modelPath: path)
-                }
+                await sttManager.initialize()
             }
         }
     }

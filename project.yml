@@ -13,15 +13,12 @@ settings:
     EXCLUDED_ARCHS[sdk=iphonesimulator*]: x86_64
 
 packages:
-  moonshine-swift:
-    url: https://github.com/moonshine-ai/moonshine-swift.git
-    from: "0.0.1"
   llama-swift:
     url: https://github.com/mattt/llama.swift.git
     from: "2.0.0"
-  mlx-audio-swift:
-    url: https://github.com/lucasnewman/mlx-audio-swift.git
-    branch: main
+  FluidAudio:
+    url: https://github.com/FluidInference/FluidAudio.git
+    branch: feat/pocket-tts-streaming
 
 targets:
   Locus:
@@ -38,14 +35,10 @@ targets:
         CURRENT_PROJECT_VERSION: 1
         CODE_SIGN_STYLE: Automatic
     dependencies:
-      - package: moonshine-swift
-        product: Moonshine
       - package: llama-swift
         product: LlamaSwift
-      - package: mlx-audio-swift
-        product: MLXAudioTTS
-      - package: mlx-audio-swift
-        product: MLXAudioCore
+      - package: FluidAudio
+        product: FluidAudio
     info:
       path: Locus/Info.plist
       properties:

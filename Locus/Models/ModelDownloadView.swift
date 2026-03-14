@@ -26,14 +26,6 @@ struct ModelDownloadView: View {
                 // Model status cards
                 VStack(spacing: 16) {
                     ModelStatusRow(
-                        name: "Speech Recognition",
-                        detail: ModelManager.sttModel.totalSize,
-                        icon: "mic.fill",
-                        progress: modelManager.sttDownloadProgress,
-                        isReady: modelManager.sttReady
-                    )
-
-                    ModelStatusRow(
                         name: "Language Model",
                         detail: ModelManager.llmModel.totalSize,
                         icon: "brain",
@@ -65,7 +57,7 @@ struct ModelDownloadView: View {
                                 .tint(.white)
                                 .padding(.trailing, 4)
                         }
-                        Text(isDownloading ? "Downloading..." : "Download Models (~798 MB)")
+                        Text(isDownloading ? "Downloading..." : "Download Models (~1.26 GB)")
                     }
                     .font(.headline)
                     .frame(maxWidth: .infinity)
@@ -84,7 +76,6 @@ struct ModelDownloadView: View {
 
                 // Skip button (for development)
                 Button("Skip (use placeholder data)") {
-                    modelManager.sttReady = true
                     modelManager.llmReady = true
                 }
                 .font(.caption)

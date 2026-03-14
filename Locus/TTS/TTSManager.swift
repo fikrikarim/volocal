@@ -1,12 +1,11 @@
 import Foundation
 import AVFoundation
-import MLXAudioTTS
-import MLXAudioCore
+import FluidAudio
 import os
 
 private let logger = Logger(subsystem: "com.locus.app", category: "tts")
 
-/// Wraps mlx-audio-swift for on-device streaming text-to-speech synthesis.
+/// Wraps FluidAudio's PocketTtsManager for on-device streaming text-to-speech.
 /// Models are auto-downloaded on first initialize() call.
 @MainActor
 final class TTSManager: ObservableObject {
@@ -14,11 +13,15 @@ final class TTSManager: ObservableObject {
     @Published var selectedVoice: String = "alba"
     @Published var error: String?
 
-    private var model: (any SpeechGenerationModel)?
-    private let player = AudioPlayer()
+    private var engine: PocketTtsManager?
+    private var audioEngine: AVAudioEngine?
+    private var playerNode: AVAudioPlayerNode?
     private var speakTask: Task<Void, Never>?
     private var hasTrackedFirstInference = false
+    private var queuedBuffers = 0
     var metrics: SystemMetrics?
+
+    private let sampleRate = Double(PocketTtsConstants.audioSampleRate) // 24000
 
     static let voiceNames = [
         "alba", "marius", "javert", "jean",
@@ -27,26 +30,19 @@ final class TTSManager: ObservableObject {
 
     init() {}
 
-    /// Initialize the TTS engine. Downloads MLX models on first use,
-    /// then runs a dummy generation to force weights into memory.
+    /// Initialize the TTS engine. Downloads CoreML models on first use,
+    /// then runs a dummy generation to warm up.
     func initialize() async {
         do {
-            let loadedModel = try await TTS.loadModel(
-                modelRepo: "mlx-community/pocket-tts",
-                modelType: "pocket_tts"
-            )
-            self.model = loadedModel
+            let manager = PocketTtsManager()
+            try await manager.initialize()
+            self.engine = manager
 
-            // Warm up: force MLX to load weights into memory
+            // Warm up: force CoreML to compile models
             logger.info("TTS warmup: running dummy generation...")
-            for try await _ in loadedModel.generateSamplesStream(
-                text: "Hi",
-                voice: "alba",
-                refAudio: nil,
-                refText: nil,
-                language: nil
-            ) {
-                break  // One chunk is enough to load all weights
+            let stream = try await manager.synthesizeStreaming(text: "Hi", voice: "alba")
+            for try await _ in stream {
+                break // One frame is enough
             }
             logger.info("TTS warmup done")
         } catch {
@@ -54,12 +50,12 @@ final class TTSManager: ObservableObject {
         }
     }
 
-    /// Synthesize text via streaming and play chunks as they arrive.
+    /// Synthesize text via streaming and play frames as they arrive.
     func speak(_ text: String) async {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
 
         speakTask?.cancel()
-        player.stopStreaming()
+        stopAudioEngine()
 
         isSpeaking = true
         error = nil
@@ -67,7 +63,7 @@ final class TTSManager: ObservableObject {
         let speakTimeout: TimeInterval = 30
         let task = Task {
             do {
-                guard let model = model else {
+                guard let engine = engine else {
                     throw TTSError.engineNotLoaded
                 }
 
@@ -77,7 +73,7 @@ final class TTSManager: ObservableObject {
                 try session.setCategory(.playback, mode: .default)
                 try session.setActive(true)
 
-                player.startStreaming(sampleRate: Double(model.sampleRate))
+                try startAudioEngine()
 
                 if !hasTrackedFirstInference {
                     metrics?.beginTracking("TTS (PocketTTS)")
@@ -86,45 +82,38 @@ final class TTSManager: ObservableObject {
                 let genStart = CFAbsoluteTimeGetCurrent()
                 var chunkCount = 0
 
-                for try await samples in model.generateSamplesStream(
+                let stream = try await engine.synthesizeStreaming(
                     text: text,
                     voice: selectedVoice,
-                    refAudio: nil,
-                    refText: nil,
-                    language: nil
-                ) {
+                    temperature: 0.4
+                )
+
+                for try await frame in stream {
                     if !hasTrackedFirstInference {
                         hasTrackedFirstInference = true
                         metrics?.endTracking("TTS (PocketTTS)")
                     }
                     if Task.isCancelled { break }
 
-                    // Timeout: abort if generation takes too long
                     if CFAbsoluteTimeGetCurrent() - genStart > speakTimeout {
                         logger.warning("speak timeout after \(speakTimeout)s, aborting")
                         break
                     }
 
                     chunkCount += 1
-                    logger.debug("chunk \(chunkCount): \(samples.count) samples")
-                    player.scheduleAudioChunk(samples, withCrossfade: true)
+                    logger.debug("chunk \(chunkCount): \(frame.samples.count) samples")
+                    scheduleAudioFrame(frame.samples)
                 }
 
                 logger.info("speak generation done: \(chunkCount) chunks")
 
                 if !Task.isCancelled {
                     if chunkCount > 0 {
-                        player.finishStreamingInput()
                         // Wait for playback to complete
-                        while player.isSpeaking && !Task.isCancelled {
+                        while queuedBuffers > 0 && !Task.isCancelled {
                             try await Task.sleep(for: .milliseconds(50))
                         }
-                    } else {
-                        logger.warning("speak produced 0 chunks for: \"\(text)\"")
-                        player.stopStreaming()
                     }
-                } else {
-                    player.stopStreaming()
                 }
             } catch {
                 if !Task.isCancelled {
@@ -132,6 +121,7 @@ final class TTSManager: ObservableObject {
                     self.error = "TTS failed: \(error.localizedDescription)"
                 }
             }
+            stopAudioEngine()
             if !Task.isCancelled {
                 self.isSpeaking = false
             }
@@ -145,8 +135,68 @@ final class TTSManager: ObservableObject {
     func stop() {
         speakTask?.cancel()
         speakTask = nil
-        player.stopStreaming()
+        stopAudioEngine()
         isSpeaking = false
+    }
+
+    // MARK: - Audio Engine
+
+    private func startAudioEngine() throws {
+        let engine = AVAudioEngine()
+        let node = AVAudioPlayerNode()
+
+        let format = AVAudioFormat(
+            commonFormat: .pcmFormatFloat32,
+            sampleRate: sampleRate,
+            channels: 1,
+            interleaved: false
+        )!
+
+        engine.attach(node)
+        engine.connect(node, to: engine.mainMixerNode, format: format)
+        engine.prepare()
+        try engine.start()
+        node.play()
+
+        self.audioEngine = engine
+        self.playerNode = node
+        self.queuedBuffers = 0
+    }
+
+    private func stopAudioEngine() {
+        playerNode?.stop()
+        audioEngine?.stop()
+        audioEngine = nil
+        playerNode = nil
+        queuedBuffers = 0
+    }
+
+    private func scheduleAudioFrame(_ samples: [Float]) {
+        guard let node = playerNode else { return }
+
+        let format = AVAudioFormat(
+            commonFormat: .pcmFormatFloat32,
+            sampleRate: sampleRate,
+            channels: 1,
+            interleaved: false
+        )!
+
+        guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(samples.count)) else {
+            return
+        }
+        buffer.frameLength = AVAudioFrameCount(samples.count)
+        if let channelData = buffer.floatChannelData {
+            samples.withUnsafeBufferPointer { src in
+                channelData[0].update(from: src.baseAddress!, count: samples.count)
+            }
+        }
+
+        queuedBuffers += 1
+        node.scheduleBuffer(buffer, completionCallbackType: .dataConsumed) { [weak self] _ in
+            Task { @MainActor in
+                self?.queuedBuffers = max((self?.queuedBuffers ?? 1) - 1, 0)
+            }
+        }
     }
 }
 

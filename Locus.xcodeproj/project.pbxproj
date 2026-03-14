@@ -22,13 +22,11 @@
 		9DD02CDC11CF7E3AF1642122 /* PipelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25C27BD9BC0AE50323FDC81 /* PipelineView.swift */; };
 		A06C13B03A2DE5C15C053969 /* ModelDownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7EF684F198EAAF2618172A /* ModelDownloadView.swift */; };
 		ABB411F28F42C9866754317B /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FD1006B82F07D78B94B809 /* ModelManager.swift */; };
-		C5736B3BD783A1DE33364A2D /* LlamaSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 61D95903B0C29E3F5E5B54AF /* LlamaSwift */; };
+		C5736B3BD783A1DE33364A2D /* FluidAudio in Frameworks */ = {isa = PBXBuildFile; productRef = 5EACAD89D34895A1BE1803E7 /* FluidAudio */; };
 		C8AB35013978EF6D0C9EF2BC /* ModelLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1A1A5D084DEBFE86302A5B /* ModelLoadingView.swift */; };
 		DEFE1DFF4315BB1793580C04 /* ConversationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB52397989F3859EC76AD64 /* ConversationModel.swift */; };
 		EE130966507E743AECFF72E9 /* MetricsOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADE72147986E0E082EB7D43 /* MetricsOverlay.swift */; };
-		F0DF0200B55D32C37B6BDCF5 /* MLXAudioTTS in Frameworks */ = {isa = PBXBuildFile; productRef = 767CC2E38B73A53DDA8B0844 /* MLXAudioTTS */; };
-		F100D0F33CAF95DEF9D4CBB2 /* Moonshine in Frameworks */ = {isa = PBXBuildFile; productRef = 8FACFB35E01E0EFFFA4FD2D8 /* Moonshine */; };
-		F5F400E07ADCC016A88D2717 /* MLXAudioCore in Frameworks */ = {isa = PBXBuildFile; productRef = F664FB87C9C5287E4C141E67 /* MLXAudioCore */; };
+		F100D0F33CAF95DEF9D4CBB2 /* LlamaSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 61D95903B0C29E3F5E5B54AF /* LlamaSwift */; };
 		F893A67A4CEF0514450957F3 /* STTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D860B809D0165F971C6074A2 /* STTManager.swift */; };
 /* End PBXBuildFile section */
 
@@ -62,10 +60,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F100D0F33CAF95DEF9D4CBB2 /* Moonshine in Frameworks */,
-				C5736B3BD783A1DE33364A2D /* LlamaSwift in Frameworks */,
-				F0DF0200B55D32C37B6BDCF5 /* MLXAudioTTS in Frameworks */,
-				F5F400E07ADCC016A88D2717 /* MLXAudioCore in Frameworks */,
+				F100D0F33CAF95DEF9D4CBB2 /* LlamaSwift in Frameworks */,
+				C5736B3BD783A1DE33364A2D /* FluidAudio in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -197,10 +193,8 @@
 			);
 			name = Locus;
 			packageProductDependencies = (
-				8FACFB35E01E0EFFFA4FD2D8 /* Moonshine */,
 				61D95903B0C29E3F5E5B54AF /* LlamaSwift */,
-				767CC2E38B73A53DDA8B0844 /* MLXAudioTTS */,
-				F664FB87C9C5287E4C141E67 /* MLXAudioCore */,
+				5EACAD89D34895A1BE1803E7 /* FluidAudio */,
 			);
 			productName = Locus;
 			productReference = AEFB9A10F8784355D5344D95 /* Locus.app */;
@@ -230,9 +224,8 @@
 			mainGroup = 796058090ADB9656F1AC489F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				5FEF3F7006D20A3A2B87542F /* XCRemoteSwiftPackageReference "FluidAudio" */,
 				966EE07AEAEF01A0DCD3C437 /* XCRemoteSwiftPackageReference "llama.swift" */,
-				0B06188567DAFB5AB617F875 /* XCRemoteSwiftPackageReference "mlx-audio-swift" */,
-				B9539E122E0D00F27A54AFD8 /* XCRemoteSwiftPackageReference "moonshine-swift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1034C21D9930A5F35D463962 /* Products */;
@@ -473,11 +466,11 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		0B06188567DAFB5AB617F875 /* XCRemoteSwiftPackageReference "mlx-audio-swift" */ = {
+		5FEF3F7006D20A3A2B87542F /* XCRemoteSwiftPackageReference "FluidAudio" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/lucasnewman/mlx-audio-swift.git";
+			repositoryURL = "https://github.com/FluidInference/FluidAudio.git";
 			requirement = {
-				branch = main;
+				branch = "feat/pocket-tts-streaming";
 				kind = branch;
 			};
 		};
@@ -489,36 +482,18 @@
 				minimumVersion = 2.0.0;
 			};
 		};
-		B9539E122E0D00F27A54AFD8 /* XCRemoteSwiftPackageReference "moonshine-swift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/moonshine-ai/moonshine-swift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 0.0.1;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		5EACAD89D34895A1BE1803E7 /* FluidAudio */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 5FEF3F7006D20A3A2B87542F /* XCRemoteSwiftPackageReference "FluidAudio" */;
+			productName = FluidAudio;
+		};
 		61D95903B0C29E3F5E5B54AF /* LlamaSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 966EE07AEAEF01A0DCD3C437 /* XCRemoteSwiftPackageReference "llama.swift" */;
 			productName = LlamaSwift;
-		};
-		767CC2E38B73A53DDA8B0844 /* MLXAudioTTS */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0B06188567DAFB5AB617F875 /* XCRemoteSwiftPackageReference "mlx-audio-swift" */;
-			productName = MLXAudioTTS;
-		};
-		8FACFB35E01E0EFFFA4FD2D8 /* Moonshine */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = B9539E122E0D00F27A54AFD8 /* XCRemoteSwiftPackageReference "moonshine-swift" */;
-			productName = Moonshine;
-		};
-		F664FB87C9C5287E4C141E67 /* MLXAudioCore */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 0B06188567DAFB5AB617F875 /* XCRemoteSwiftPackageReference "mlx-audio-swift" */;
-			productName = MLXAudioCore;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

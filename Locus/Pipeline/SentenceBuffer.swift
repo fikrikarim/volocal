@@ -49,23 +49,45 @@ final class SentenceBuffer {
 
     // MARK: - Private
 
+    /// Max words before forcing a chunk even without punctuation
+    private let maxWordsBeforeFlush = 12
+
     private func findSentenceBoundary() -> Range<String.Index>? {
-        // Find sentence-ending punctuation followed by a space or end of string
+        // Priority 1: sentence-ending punctuation
         for i in buffer.indices {
             let char = buffer[i]
             if char == "." || char == "!" || char == "?" {
                 let nextIndex = buffer.index(after: i)
-                // Boundary if followed by space, end of string, or quote
-                if nextIndex >= buffer.endIndex {
-                    // Only emit at true end-of-stream (handled by flush)
-                    continue
-                }
+                if nextIndex >= buffer.endIndex { continue }
                 let nextChar = buffer[nextIndex]
                 if nextChar == " " || nextChar == "\n" || nextChar == "\"" || nextChar == "\u{201D}" {
                     return i..<nextIndex
                 }
             }
         }
+
+        // Priority 2: clause boundary (comma, semicolon, colon, dash) if buffer is getting long
+        let wordCount = buffer.split(separator: " ").count
+        if wordCount >= 6 {
+            for i in buffer.indices {
+                let char = buffer[i]
+                if char == "," || char == ";" || char == ":" || char == "—" || char == "-" {
+                    let nextIndex = buffer.index(after: i)
+                    if nextIndex < buffer.endIndex && buffer[nextIndex] == " " {
+                        return i..<nextIndex
+                    }
+                }
+            }
+        }
+
+        // Priority 3: force flush after too many words to avoid long silences
+        if wordCount >= maxWordsBeforeFlush {
+            // Find the last space to break on a word boundary
+            if let lastSpace = buffer.lastIndex(of: " ") {
+                return lastSpace..<buffer.index(after: lastSpace)
+            }
+        }
+
         return nil
     }
 }

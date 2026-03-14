@@ -43,13 +43,11 @@ final class VoicePipeline: ObservableObject {
 
     var metrics: SystemMetrics?
 
-    func configure(sttModelPath: String?, llmModelPath: String?) async {
+    func configure(llmModelPath: String?) async {
         loadingStatus = "Loading speech recognition..."
-        if let path = sttModelPath {
-            metrics?.beginTracking("STT (Moonshine)")
-            sttManager.configure(modelPath: path)
-            metrics?.endTracking("STT (Moonshine)")
-        }
+        metrics?.beginTracking("STT (Parakeet EOU)")
+        await sttManager.initialize()
+        metrics?.endTracking("STT (Parakeet EOU)")
 
         loadingStatus = "Loading language model..."
         if let path = llmModelPath {

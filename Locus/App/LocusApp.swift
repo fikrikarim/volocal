@@ -18,7 +18,6 @@ struct LocusApp: App {
                         pipeline.metrics = metrics
                         metrics.startMonitoring()
                         await pipeline.configure(
-                            sttModelPath: modelManager.sttModelPath,
                             llmModelPath: modelManager.llmModelPath
                         )
                     }
