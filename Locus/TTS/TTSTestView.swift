@@ -17,7 +17,7 @@ struct TTSTestView: View {
                             Text(name.capitalized).tag(name)
                         }
                     }
-                    .pickerStyle(.segmented)
+                    .pickerStyle(.menu)
                 }
                 .padding(.horizontal)
 

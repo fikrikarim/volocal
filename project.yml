@@ -19,9 +19,9 @@ packages:
   llama-swift:
     url: https://github.com/mattt/llama.swift.git
     from: "2.0.0"
-  FluidAudio:
-    url: https://github.com/FluidInference/FluidAudio.git
-    from: "0.12.2"
+  mlx-audio-swift:
+    url: https://github.com/lucasnewman/mlx-audio-swift.git
+    branch: main
 
 targets:
   Locus:
@@ -42,8 +42,10 @@ targets:
         product: Moonshine
       - package: llama-swift
         product: LlamaSwift
-      - package: FluidAudio
-        product: FluidAudio
+      - package: mlx-audio-swift
+        product: MLXAudioTTS
+      - package: mlx-audio-swift
+        product: MLXAudioCore
     info:
       path: Locus/Info.plist
       properties:

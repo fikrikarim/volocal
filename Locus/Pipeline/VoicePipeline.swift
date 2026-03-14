@@ -16,6 +16,8 @@ final class VoicePipeline: ObservableObject {
     private let sentenceBuffer = SentenceBuffer()
 
     private var generationTask: Task<Void, Never>?
+    private var sentenceQueue: [String] = []
+    private var speakingTask: Task<Void, Never>?
 
     enum PipelineState: Equatable {
         case idle
@@ -76,6 +78,9 @@ final class VoicePipeline: ObservableObject {
         llmManager.stopGeneration()
         generationTask?.cancel()
         generationTask = nil
+        speakingTask?.cancel()
+        speakingTask = nil
+        sentenceQueue.removeAll()
         sentenceBuffer.reset()
         currentResponse = ""
 
@@ -100,6 +105,8 @@ final class VoicePipeline: ObservableObject {
     }
 
     private func handleUtterance(_ text: String) {
+        guard state == .listening else { return }
+
         let userMessage = ConversationMessage(role: .user, text: text)
         conversationHistory.append(userMessage)
         currentTranscript = text
@@ -108,6 +115,7 @@ final class VoicePipeline: ObservableObject {
         state = .processing
         currentResponse = ""
         sentenceBuffer.reset()
+        sentenceQueue.removeAll()
 
         generationTask = Task {
             for await token in llmManager.generate(prompt: text) {
@@ -122,21 +130,32 @@ final class VoicePipeline: ObservableObject {
                 let assistantMessage = ConversationMessage(role: .assistant, text: currentResponse)
                 conversationHistory.append(assistantMessage)
 
-                // Wait for TTS to finish, then resume listening
-                while ttsManager.isSpeaking {
+                // Wait for all queued sentences to finish speaking
+                while speakingTask != nil && !Task.isCancelled {
                     try? await Task.sleep(for: .milliseconds(100))
                 }
 
-                state = .listening
-                sttManager.startListening()
+                if !Task.isCancelled {
+                    state = .listening
+                    sttManager.startListening()
+                }
             }
         }
     }
 
     private func handleSentence(_ sentence: String) {
+        sentenceQueue.append(sentence)
+        processNextSentence()
+    }
+
+    private func processNextSentence() {
+        guard speakingTask == nil, !sentenceQueue.isEmpty else { return }
+        let sentence = sentenceQueue.removeFirst()
         state = .speaking
-        Task {
+        speakingTask = Task {
             await ttsManager.speak(sentence)
+            speakingTask = nil
+            processNextSentence()
         }
     }
 }
