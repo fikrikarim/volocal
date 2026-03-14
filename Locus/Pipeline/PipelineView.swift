@@ -72,8 +72,7 @@ struct PipelineView: View {
             .task {
                 await pipeline.configure(
                     sttModelPath: modelManager.sttModelPath,
-                    llmModelPath: modelManager.llmModelPath,
-                    ttsModelPath: modelManager.ttsModelPath
+                    llmModelPath: modelManager.llmModelPath
                 )
             }
         }

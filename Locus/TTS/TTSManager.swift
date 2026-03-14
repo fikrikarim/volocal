@@ -1,33 +1,27 @@
 import Foundation
 import AVFoundation
+import FluidAudio
 
-/// Wraps PocketTTSSwift for on-device text-to-speech synthesis.
-/// Requires pocket-tts-ios XCFramework (run scripts/setup.sh first).
+/// Wraps FluidAudio's PocketTtsManager for on-device text-to-speech synthesis.
+/// Models are auto-downloaded on first initialize() call.
 @MainActor
 final class TTSManager: ObservableObject {
     @Published var isSpeaking: Bool = false
-    @Published var selectedVoiceIndex: UInt32 = 0
+    @Published var selectedVoice: String = "alba"
     @Published var error: String?
 
-    private var ttsEngine: PocketTTSSwift?
+    private var ttsEngine: PocketTtsManager?
     private var audioPlayer: AVAudioPlayer?
-    private var audioQueue: [Data] = []
-    private var isPlaying = false
-    private var playbackTask: Task<Void, Never>?
 
-    static let voiceNames = [
-        "Alba", "Marius", "Javert", "Jean",
-        "Fantine", "Cosette", "Eponine", "Azelma"
-    ]
+    static let voiceNames = ["alba", "azelma", "cosette", "javert"]
 
     init() {}
 
-    /// Initialize the TTS engine with the path to Pocket TTS model files.
-    func configure(modelPath: String) async {
-        let engine = PocketTTSSwift(modelPath: modelPath)
+    /// Initialize the TTS engine. FluidAudio auto-downloads CoreML models on first use.
+    func initialize() async {
+        let engine = PocketTtsManager()
         do {
-            try await engine.load()
-            try await engine.configure(.default)
+            try await engine.initialize()
             self.ttsEngine = engine
         } catch {
             self.error = "TTS init failed: \(error.localizedDescription)"
@@ -46,68 +40,22 @@ final class TTSManager: ObservableObject {
                 throw TTSError.engineNotLoaded
             }
 
-            // Update voice selection
-            let config = PocketTTSSwift.Config(voiceIndex: selectedVoiceIndex)
-            try await engine.configure(config)
-
-            // Synthesize
-            let result = try await engine.synthesize(text: text)
-            await play(audioData: result.audioData)
+            let audioData = try await engine.synthesize(
+                text: text,
+                voice: selectedVoice,
+                temperature: 0.7
+            )
+            await play(audioData: audioData)
         } catch {
             self.error = "TTS failed: \(error.localizedDescription)"
             isSpeaking = false
         }
     }
 
-    /// Synthesize with streaming for lower latency. Plays audio chunks as they arrive.
-    func speakStreaming(_ text: String) async {
-        guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
-        guard let engine = ttsEngine else {
-            error = "TTS engine not loaded"
-            return
-        }
-
-        isSpeaking = true
-        error = nil
-
-        do {
-            let config = PocketTTSSwift.Config(voiceIndex: selectedVoiceIndex)
-            try await engine.configure(config)
-
-            for try await chunk in await engine.synthesizeStreaming(text: text) {
-                if chunk.isFinal { break }
-                queueAudio(chunk.audioData)
-            }
-        } catch {
-            self.error = "TTS streaming failed: \(error.localizedDescription)"
-        }
-
-        // Wait for audio queue to drain
-        while isPlaying {
-            try? await Task.sleep(for: .milliseconds(50))
-        }
-        isSpeaking = false
-    }
-
-    /// Queue audio data for sequential playback.
-    func queueAudio(_ data: Data) {
-        audioQueue.append(data)
-        if !isPlaying {
-            playNext()
-        }
-    }
-
-    /// Stop all audio playback and cancel synthesis.
+    /// Stop all audio playback.
     func stop() {
-        if let engine = ttsEngine {
-            Task { await engine.cancel() }
-        }
         audioPlayer?.stop()
         audioPlayer = nil
-        audioQueue.removeAll()
-        playbackTask?.cancel()
-        playbackTask = nil
-        isPlaying = false
         isSpeaking = false
     }
 
@@ -130,21 +78,6 @@ final class TTSManager: ObservableObject {
         }
         isSpeaking = false
     }
-
-    private func playNext() {
-        guard !audioQueue.isEmpty else {
-            isPlaying = false
-            return
-        }
-
-        isPlaying = true
-        let data = audioQueue.removeFirst()
-
-        playbackTask = Task {
-            await play(audioData: data)
-            playNext()
-        }
-    }
 }
 
 enum TTSError: LocalizedError {
@@ -153,7 +86,7 @@ enum TTSError: LocalizedError {
     var errorDescription: String? {
         switch self {
         case .engineNotLoaded:
-            return "TTS engine not loaded. Ensure model files are downloaded."
+            return "TTS engine not loaded. Call initialize() first."
         }
     }
 }

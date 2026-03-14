@@ -1,16 +1,15 @@
 import Foundation
 
-/// Manages ML model paths for STT, LLM, and TTS.
+/// Manages ML model paths for STT and LLM.
 /// For device testing, run `scripts/serve-models.sh` on your Mac,
 /// then tap "Download Models" in the app — it pulls from your local network.
+/// TTS models are managed by FluidAudio (auto-downloaded to Caches/fluidaudio/).
 @MainActor
 final class ModelManager: ObservableObject {
     @Published var sttDownloadProgress: Double = 0
     @Published var llmDownloadProgress: Double = 0
-    @Published var ttsDownloadProgress: Double = 0
     @Published var sttReady: Bool = false
     @Published var llmReady: Bool = false
-    @Published var ttsReady: Bool = false
     @Published var currentDownload: String?
     @Published var error: String?
 
@@ -25,7 +24,7 @@ final class ModelManager: ObservableObject {
     #endif
 
     var allModelsReady: Bool {
-        sttReady && llmReady && ttsReady
+        sttReady && llmReady
     }
 
     // MARK: - Model Paths
@@ -50,14 +49,6 @@ final class ModelManager: ObservableObject {
               let size = attrs[.size] as? UInt64,
               size > 1024 else { return nil }
         return path
-    }
-
-    var ttsModelPath: String? {
-        let dir = modelsDirectory.appendingPathComponent("pocket-tts")
-        if fileManager.fileExists(atPath: dir.appendingPathComponent("model.safetensors").path) {
-            return dir.path
-        }
-        return nil
     }
 
     // MARK: - Model Definitions
@@ -105,33 +96,6 @@ final class ModelManager: ObservableObject {
         totalSize: "~508 MB"
     )
 
-    static let ttsModel = ModelDefinition(
-        name: "Pocket TTS (TTS)",
-        files: [
-            ModelFile(url: "\(baseURL)/pocket-tts/model.safetensors",
-                      relativePath: "pocket-tts/model.safetensors"),
-            ModelFile(url: "\(baseURL)/pocket-tts/tokenizer.model",
-                      relativePath: "pocket-tts/tokenizer.model"),
-            ModelFile(url: "\(baseURL)/pocket-tts/embeddings/alba.safetensors",
-                      relativePath: "pocket-tts/embeddings/alba.safetensors"),
-            ModelFile(url: "\(baseURL)/pocket-tts/embeddings/marius.safetensors",
-                      relativePath: "pocket-tts/embeddings/marius.safetensors"),
-            ModelFile(url: "\(baseURL)/pocket-tts/embeddings/javert.safetensors",
-                      relativePath: "pocket-tts/embeddings/javert.safetensors"),
-            ModelFile(url: "\(baseURL)/pocket-tts/embeddings/jean.safetensors",
-                      relativePath: "pocket-tts/embeddings/jean.safetensors"),
-            ModelFile(url: "\(baseURL)/pocket-tts/embeddings/fantine.safetensors",
-                      relativePath: "pocket-tts/embeddings/fantine.safetensors"),
-            ModelFile(url: "\(baseURL)/pocket-tts/embeddings/cosette.safetensors",
-                      relativePath: "pocket-tts/embeddings/cosette.safetensors"),
-            ModelFile(url: "\(baseURL)/pocket-tts/embeddings/eponine.safetensors",
-                      relativePath: "pocket-tts/embeddings/eponine.safetensors"),
-            ModelFile(url: "\(baseURL)/pocket-tts/embeddings/azelma.safetensors",
-                      relativePath: "pocket-tts/embeddings/azelma.safetensors"),
-        ],
-        totalSize: "~230 MB"
-    )
-
     // MARK: - Initialization
 
     init() {
@@ -146,7 +110,6 @@ final class ModelManager: ObservableObject {
     private func checkExistingModels() {
         sttReady = sttModelPath != nil
         llmReady = llmModelPath != nil
-        ttsReady = ttsModelPath != nil
     }
 
     // MARK: - Download
@@ -160,7 +123,6 @@ final class ModelManager: ObservableObject {
         let models: [(ModelDefinition, ReferenceWritableKeyPath<ModelManager, Double>, ReferenceWritableKeyPath<ModelManager, Bool>)] = [
             (Self.sttModel, \.sttDownloadProgress, \.sttReady),
             (Self.llmModel, \.llmDownloadProgress, \.llmReady),
-            (Self.ttsModel, \.ttsDownloadProgress, \.ttsReady),
         ]
 
         for (definition, progressPath, readyPath) in models {
@@ -258,9 +220,7 @@ extension ModelManager {
         createModelsDirectory()
         sttReady = false
         llmReady = false
-        ttsReady = false
         sttDownloadProgress = 0
         llmDownloadProgress = 0
-        ttsDownloadProgress = 0
     }
 }

@@ -10,7 +10,7 @@ wheels/
 .venv
 
 # ML models (too large for git)
-models/
+/models/
 *.gguf
 *.ort
 *.safetensors

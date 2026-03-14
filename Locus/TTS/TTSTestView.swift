@@ -1,7 +1,6 @@
 import SwiftUI
 
 struct TTSTestView: View {
-    @EnvironmentObject var modelManager: ModelManager
     @StateObject private var ttsManager = TTSManager()
     @State private var inputText = "Hello! I am Locus, your on-device voice assistant."
 
@@ -13,9 +12,9 @@ struct TTSTestView: View {
                     Text("Voice")
                         .font(.headline)
 
-                    Picker("Voice", selection: $ttsManager.selectedVoiceIndex) {
-                        ForEach(0..<UInt32(TTSManager.voiceNames.count), id: \.self) { index in
-                            Text(TTSManager.voiceNames[Int(index)]).tag(index)
+                    Picker("Voice", selection: $ttsManager.selectedVoice) {
+                        ForEach(TTSManager.voiceNames, id: \.self) { name in
+                            Text(name.capitalized).tag(name)
                         }
                     }
                     .pickerStyle(.segmented)
@@ -89,9 +88,7 @@ struct TTSTestView: View {
             .padding(.vertical)
             .navigationTitle("Text-to-Speech")
             .task {
-                if let path = modelManager.ttsModelPath {
-                    await ttsManager.configure(modelPath: path)
-                }
+                await ttsManager.initialize()
             }
         }
     }

@@ -40,14 +40,6 @@ struct ModelDownloadView: View {
                         progress: modelManager.llmDownloadProgress,
                         isReady: modelManager.llmReady
                     )
-
-                    ModelStatusRow(
-                        name: "Text-to-Speech",
-                        detail: ModelManager.ttsModel.totalSize,
-                        icon: "speaker.wave.3.fill",
-                        progress: modelManager.ttsDownloadProgress,
-                        isReady: modelManager.ttsReady
-                    )
                 }
                 .padding(.horizontal)
 
@@ -73,7 +65,7 @@ struct ModelDownloadView: View {
                                 .tint(.white)
                                 .padding(.trailing, 4)
                         }
-                        Text(isDownloading ? "Downloading..." : "Download Models (~855 MB)")
+                        Text(isDownloading ? "Downloading..." : "Download Models (~798 MB)")
                     }
                     .font(.headline)
                     .frame(maxWidth: .infinity)
@@ -94,7 +86,6 @@ struct ModelDownloadView: View {
                 Button("Skip (use placeholder data)") {
                     modelManager.sttReady = true
                     modelManager.llmReady = true
-                    modelManager.ttsReady = true
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)

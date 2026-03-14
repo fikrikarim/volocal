@@ -1,6 +1,7 @@
 #!/bin/bash
 # Serves model files from your Mac over local WiFi.
 # Run this, then tap "Download Models" in the app on your iPhone.
+# Note: TTS models are managed by FluidAudio and not served here.
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -17,7 +18,6 @@ echo ""
 # Create serving directory with the expected file structure
 rm -rf "$SERVE_DIR"
 mkdir -p "$SERVE_DIR/moonshine-medium-streaming"
-mkdir -p "$SERVE_DIR/pocket-tts/embeddings"
 
 # Symlink Moonshine models
 MOONSHINE_SRC="$HOME/Library/Caches/moonshine_voice/download.moonshine.ai/model/medium-streaming-en/quantized"
@@ -39,24 +39,13 @@ else
     echo "[SKIP] LLM model not found at $LLM_SRC"
 fi
 
-# Symlink TTS models
-TTS_SRC="$PROJECT_DIR/models/pocket-tts-full"
-if [ -d "$TTS_SRC" ]; then
-    ln -sf "$TTS_SRC/tts_b6369a24.safetensors" "$SERVE_DIR/pocket-tts/model.safetensors"
-    ln -sf "$TTS_SRC/tokenizer.model" "$SERVE_DIR/pocket-tts/tokenizer.model"
-    for f in "$TTS_SRC/embeddings/"*.safetensors; do
-        ln -sf "$f" "$SERVE_DIR/pocket-tts/embeddings/$(basename "$f")" 2>/dev/null || true
-    done
-    echo "[OK] Pocket TTS"
-else
-    echo "[SKIP] TTS models not found at $TTS_SRC"
-fi
-
 echo ""
 echo "Serving at: http://$LOCAL_IP:$PORT"
 echo ""
 echo "Set this URL in the app's ModelManager.localServerURL"
 echo "or update the download URLs to point here."
+echo ""
+echo "Note: TTS models are auto-downloaded by FluidAudio (not served here)."
 echo ""
 echo "Press Ctrl+C to stop."
 echo ""

@@ -37,16 +37,14 @@ final class VoicePipeline: ObservableObject {
         setupCallbacks()
     }
 
-    func configure(sttModelPath: String?, llmModelPath: String?, ttsModelPath: String?) async {
+    func configure(sttModelPath: String?, llmModelPath: String?) async {
         if let path = sttModelPath {
             sttManager.configure(modelPath: path)
         }
         if let path = llmModelPath {
             try? await llmManager.loadModel(path: path)
         }
-        if let path = ttsModelPath {
-            await ttsManager.configure(modelPath: path)
-        }
+        await ttsManager.initialize()
     }
 
     func toggleListening() {
