@@ -1,4 +1,7 @@
 import Foundation
+import os
+
+private let logger = Logger(subsystem: "com.locus.app", category: "llm")
 
 /// Manages LLM inference using llama.cpp via the LlamaContext actor.
 @MainActor
@@ -24,7 +27,7 @@ final class LLMManager: ObservableObject {
         llamaContext = try LlamaContext.create(path: path, contextSize: 2048)
     }
 
-    func generate(prompt: String) -> AsyncStream<String> {
+    func generate(prompt: String, history: [ConversationMessage] = []) -> AsyncStream<String> {
         AsyncStream { continuation in
             generationTask = Task {
                 guard let ctx = llamaContext else {
@@ -38,8 +41,15 @@ final class LLMManager: ObservableObject {
                     self.tokensPerSecond = 0
                 }
 
-                // Format prompt with system message
-                let fullPrompt = "<|im_start|>system\n\(systemPrompt)<|im_end|>\n<|im_start|>user\n\(prompt)<|im_end|>\n<|im_start|>assistant\n"
+                // Build multi-turn ChatML prompt with conversation history
+                var fullPrompt = "<|im_start|>system\n\(systemPrompt)<|im_end|>\n"
+                for message in history {
+                    let role = message.role == .user ? "user" : "assistant"
+                    fullPrompt += "<|im_start|>\(role)\n\(message.text)<|im_end|>\n"
+                }
+                fullPrompt += "<|im_start|>user\n\(prompt)<|im_end|>\n"
+                // Pre-fill past <think> block to force non-thinking mode
+                fullPrompt += "<|im_start|>assistant\n<think>\n</think>\n"
 
                 let startTime = CFAbsoluteTimeGetCurrent()
                 var tokenCount = 0
@@ -52,13 +62,21 @@ final class LLMManager: ObservableObject {
                         guard let token = await ctx.completionLoop() else { break }
 
                         tokenCount += 1
+
                         let elapsed = CFAbsoluteTimeGetCurrent() - startTime
                         let tps = elapsed > 0 ? Double(tokenCount) / elapsed : 0
 
-                        continuation.yield(token)
+                        let hex = token.utf8.map { String(format: "%02x", $0) }.joined(separator: " ")
+                        logger.debug("token[\(tokenCount)]: \"\(token)\" hex=[\(hex)]")
+
+                        // Strip non-ASCII characters
+                        let cleaned = String(token.unicodeScalars.filter { $0.isASCII })
+                        guard !cleaned.isEmpty else { continue }
+
+                        continuation.yield(cleaned)
 
                         await MainActor.run {
-                            self.response += token
+                            self.response += cleaned
                             self.tokensPerSecond = tps
                         }
                     }

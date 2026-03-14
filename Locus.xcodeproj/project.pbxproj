@@ -10,6 +10,7 @@
 		11A6B800DAC8A32AFE6C2BFE /* VoicePipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A495E3CE55BDD99925D94DB /* VoicePipeline.swift */; };
 		127D6572514E5CA770319E4D /* SentenceBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = E5192D0D42DD44FAEA0A6035 /* SentenceBuffer.swift */; };
 		17068A82A3D939373CA837F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60246BC367F0D35B48DB366B /* ContentView.swift */; };
+		224AB02BE8506825B111A108 /* SystemMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8137118A2524789F5EA27511 /* SystemMetrics.swift */; };
 		308DAD73ADA1D34E6968961C /* STTTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 198D2A475833DA8AFE581664 /* STTTestView.swift */; };
 		4603298E2C2F25C588D11CA2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9ABFC63C1246370B27F3BEBD /* Assets.xcassets */; };
 		592185C7FCD34DDABCC25DB3 /* LLMManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9378E0F875785E50F196A180 /* LLMManager.swift */; };
@@ -22,7 +23,9 @@
 		A06C13B03A2DE5C15C053969 /* ModelDownloadView.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA7EF684F198EAAF2618172A /* ModelDownloadView.swift */; };
 		ABB411F28F42C9866754317B /* ModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4FD1006B82F07D78B94B809 /* ModelManager.swift */; };
 		C5736B3BD783A1DE33364A2D /* LlamaSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 61D95903B0C29E3F5E5B54AF /* LlamaSwift */; };
+		C8AB35013978EF6D0C9EF2BC /* ModelLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B1A1A5D084DEBFE86302A5B /* ModelLoadingView.swift */; };
 		DEFE1DFF4315BB1793580C04 /* ConversationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = FBB52397989F3859EC76AD64 /* ConversationModel.swift */; };
+		EE130966507E743AECFF72E9 /* MetricsOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0ADE72147986E0E082EB7D43 /* MetricsOverlay.swift */; };
 		F0DF0200B55D32C37B6BDCF5 /* MLXAudioTTS in Frameworks */ = {isa = PBXBuildFile; productRef = 767CC2E38B73A53DDA8B0844 /* MLXAudioTTS */; };
 		F100D0F33CAF95DEF9D4CBB2 /* Moonshine in Frameworks */ = {isa = PBXBuildFile; productRef = 8FACFB35E01E0EFFFA4FD2D8 /* Moonshine */; };
 		F5F400E07ADCC016A88D2717 /* MLXAudioCore in Frameworks */ = {isa = PBXBuildFile; productRef = F664FB87C9C5287E4C141E67 /* MLXAudioCore */; };
@@ -31,11 +34,14 @@
 
 /* Begin PBXFileReference section */
 		03DE64DA7097F210F1075553 /* LocusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocusApp.swift; sourceTree = "<group>"; };
+		0ADE72147986E0E082EB7D43 /* MetricsOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricsOverlay.swift; sourceTree = "<group>"; };
 		198D2A475833DA8AFE581664 /* STTTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STTTestView.swift; sourceTree = "<group>"; };
+		4B1A1A5D084DEBFE86302A5B /* ModelLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoadingView.swift; sourceTree = "<group>"; };
 		4D7855F413BB48497DFAF9BB /* LlamaContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LlamaContext.swift; sourceTree = "<group>"; };
 		5C752D8C6F794DC70D2AB8A9 /* LLMTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMTestView.swift; sourceTree = "<group>"; };
 		60246BC367F0D35B48DB366B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7A495E3CE55BDD99925D94DB /* VoicePipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoicePipeline.swift; sourceTree = "<group>"; };
+		8137118A2524789F5EA27511 /* SystemMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemMetrics.swift; sourceTree = "<group>"; };
 		9378E0F875785E50F196A180 /* LLMManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMManager.swift; sourceTree = "<group>"; };
 		9ABFC63C1246370B27F3BEBD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A43C531A3D28443468F5316E /* TTSTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSTestView.swift; sourceTree = "<group>"; };
@@ -71,6 +77,7 @@
 			children = (
 				60246BC367F0D35B48DB366B /* ContentView.swift */,
 				03DE64DA7097F210F1075553 /* LocusApp.swift */,
+				4B1A1A5D084DEBFE86302A5B /* ModelLoadingView.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";
@@ -127,6 +134,7 @@
 				BE7F27B06F0AA98E893C2E9B /* Info.plist */,
 				FEB120993FF3C23AAA83578D /* Locus.entitlements */,
 				06A40F4AE45561D4957AE6E5 /* App */,
+				C1F950DB755B15E10BA38625 /* Debug */,
 				6BCDD5B1A2A26B6D76A584CC /* LLM */,
 				E19CB1EE7F25964E8FD690FB /* Models */,
 				9B90B317C6C40DCE10C2E1D1 /* Pipeline */,
@@ -135,6 +143,15 @@
 				82E4F21943B511E720666DC8 /* TTS */,
 			);
 			path = Locus;
+			sourceTree = "<group>";
+		};
+		C1F950DB755B15E10BA38625 /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				0ADE72147986E0E082EB7D43 /* MetricsOverlay.swift */,
+				8137118A2524789F5EA27511 /* SystemMetrics.swift */,
+			);
+			path = Debug;
 			sourceTree = "<group>";
 		};
 		E19CB1EE7F25964E8FD690FB /* Models */ = {
@@ -249,12 +266,15 @@
 				976A404EC4F6671AF1658291 /* LLMTestView.swift in Sources */,
 				7CC4D5A3E72BE67FC2D97A1D /* LlamaContext.swift in Sources */,
 				976D8B4B49C6B6588EA59B2F /* LocusApp.swift in Sources */,
+				EE130966507E743AECFF72E9 /* MetricsOverlay.swift in Sources */,
 				A06C13B03A2DE5C15C053969 /* ModelDownloadView.swift in Sources */,
+				C8AB35013978EF6D0C9EF2BC /* ModelLoadingView.swift in Sources */,
 				ABB411F28F42C9866754317B /* ModelManager.swift in Sources */,
 				9DD02CDC11CF7E3AF1642122 /* PipelineView.swift in Sources */,
 				F893A67A4CEF0514450957F3 /* STTManager.swift in Sources */,
 				308DAD73ADA1D34E6968961C /* STTTestView.swift in Sources */,
 				127D6572514E5CA770319E4D /* SentenceBuffer.swift in Sources */,
+				224AB02BE8506825B111A108 /* SystemMetrics.swift in Sources */,
 				705D79B3BC9A2F4D7CF6B8D2 /* TTSManager.swift in Sources */,
 				63A9EE41AE575CB81CD90484 /* TTSTestView.swift in Sources */,
 				11A6B800DAC8A32AFE6C2BFE /* VoicePipeline.swift in Sources */,

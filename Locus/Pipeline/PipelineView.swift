@@ -1,8 +1,8 @@
 import SwiftUI
 
 struct PipelineView: View {
-    @EnvironmentObject var modelManager: ModelManager
-    @StateObject private var pipeline = VoicePipeline()
+    @EnvironmentObject var metrics: SystemMetrics
+    @EnvironmentObject var pipeline: VoicePipeline
 
     var body: some View {
         NavigationStack {
@@ -69,11 +69,14 @@ struct PipelineView: View {
                 .padding(.vertical, 20)
             }
             .navigationTitle("Locus")
-            .task {
-                await pipeline.configure(
-                    sttModelPath: modelManager.sttModelPath,
-                    llmModelPath: modelManager.llmModelPath
-                )
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        metrics.isVisible.toggle()
+                    } label: {
+                        Image(systemName: metrics.isVisible ? "chart.bar.fill" : "chart.bar")
+                    }
+                }
             }
         }
     }

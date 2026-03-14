@@ -9,6 +9,8 @@ final class VoicePipeline: ObservableObject {
     @Published var conversationHistory: [ConversationMessage] = []
     @Published var currentTranscript: String = ""
     @Published var currentResponse: String = ""
+    @Published var loadingStatus: String?
+    @Published var isReady: Bool = false
 
     let sttManager = STTManager()
     let llmManager = LLMManager()
@@ -39,14 +41,29 @@ final class VoicePipeline: ObservableObject {
         setupCallbacks()
     }
 
+    var metrics: SystemMetrics?
+
     func configure(sttModelPath: String?, llmModelPath: String?) async {
+        loadingStatus = "Loading speech recognition..."
         if let path = sttModelPath {
+            metrics?.beginTracking("STT (Moonshine)")
             sttManager.configure(modelPath: path)
+            metrics?.endTracking("STT (Moonshine)")
         }
+
+        loadingStatus = "Loading language model..."
         if let path = llmModelPath {
+            metrics?.beginTracking("LLM (llama.cpp)")
             try? await llmManager.loadModel(path: path)
+            metrics?.endTracking("LLM (llama.cpp)")
         }
+
+        loadingStatus = "Loading text-to-speech..."
+        ttsManager.metrics = metrics
         await ttsManager.initialize()
+
+        loadingStatus = nil
+        isReady = true
     }
 
     func toggleListening() {
@@ -118,7 +135,7 @@ final class VoicePipeline: ObservableObject {
         sentenceQueue.removeAll()
 
         generationTask = Task {
-            for await token in llmManager.generate(prompt: text) {
+            for await token in llmManager.generate(prompt: text, history: conversationHistory) {
                 guard !Task.isCancelled else { break }
                 currentResponse += token
                 sentenceBuffer.append(token)
