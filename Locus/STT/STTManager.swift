@@ -37,7 +37,7 @@ final class STTManager: ObservableObject {
             }
 
             // Create and configure manager
-            let manager = StreamingEouAsrManager(chunkSize: .ms320, eouDebounceMs: 800)
+            let manager = StreamingEouAsrManager(chunkSize: .ms320, eouDebounceMs: 300)
 
             await manager.setPartialCallback { [weak self] text in
                 Task { @MainActor in
@@ -74,7 +74,7 @@ final class STTManager: ObservableObject {
 
         do {
             let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.record, mode: .measurement)
+            try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
             try session.setActive(true)
 
             let engine = AVAudioEngine()

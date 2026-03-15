@@ -49,11 +49,11 @@ final class SentenceBuffer {
 
     // MARK: - Private
 
-    /// Max words before forcing a chunk even without punctuation
-    private let maxWordsBeforeFlush = 12
-
     private func findSentenceBoundary() -> Range<String.Index>? {
-        // Priority 1: sentence-ending punctuation
+        // Only split at sentence-ending punctuation (.!?) followed by space/newline.
+        // PocketTTS handles its own internal chunking at ≤50 tokens
+        // (sentences → clauses → word boundaries), so we should not
+        // split at commas or word counts here.
         for i in buffer.indices {
             let char = buffer[i]
             if char == "." || char == "!" || char == "?" {
@@ -65,29 +65,6 @@ final class SentenceBuffer {
                 }
             }
         }
-
-        // Priority 2: clause boundary (comma, semicolon, colon, dash) if buffer is getting long
-        let wordCount = buffer.split(separator: " ").count
-        if wordCount >= 6 {
-            for i in buffer.indices {
-                let char = buffer[i]
-                if char == "," || char == ";" || char == ":" || char == "—" || char == "-" {
-                    let nextIndex = buffer.index(after: i)
-                    if nextIndex < buffer.endIndex && buffer[nextIndex] == " " {
-                        return i..<nextIndex
-                    }
-                }
-            }
-        }
-
-        // Priority 3: force flush after too many words to avoid long silences
-        if wordCount >= maxWordsBeforeFlush {
-            // Find the last space to break on a word boundary
-            if let lastSpace = buffer.lastIndex(of: " ") {
-                return lastSpace..<buffer.index(after: lastSpace)
-            }
-        }
-
         return nil
     }
 }

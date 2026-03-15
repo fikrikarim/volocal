@@ -70,7 +70,7 @@ final class TTSManager: ObservableObject {
                 logger.info("speak start: \"\(text)\"")
 
                 let session = AVAudioSession.sharedInstance()
-                try session.setCategory(.playback, mode: .default)
+                try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
                 try session.setActive(true)
 
                 try startAudioEngine()

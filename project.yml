@@ -17,8 +17,7 @@ packages:
     url: https://github.com/mattt/llama.swift.git
     from: "2.0.0"
   FluidAudio:
-    url: https://github.com/FluidInference/FluidAudio.git
-    branch: feat/pocket-tts-streaming
+    path: ../FluidAudio
 
 targets:
   Locus:

@@ -45,6 +45,7 @@
 		A43C531A3D28443468F5316E /* TTSTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSTestView.swift; sourceTree = "<group>"; };
 		AEFB9A10F8784355D5344D95 /* Locus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Locus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE7F27B06F0AA98E893C2E9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		BF80E1869973969F6CE7F378 /* FluidAudio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FluidAudio; path = ../FluidAudio; sourceTree = SOURCE_ROOT; };
 		D4FD1006B82F07D78B94B809 /* ModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelManager.swift; sourceTree = "<group>"; };
 		D860B809D0165F971C6074A2 /* STTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STTManager.swift; sourceTree = "<group>"; };
 		DA7EF684F198EAAF2618172A /* ModelDownloadView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelDownloadView.swift; sourceTree = "<group>"; };
@@ -86,6 +87,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		211EAC0E9E98C5E9F638E62C /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				BF80E1869973969F6CE7F378 /* FluidAudio */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
 		6BCDD5B1A2A26B6D76A584CC /* LLM */ = {
 			isa = PBXGroup;
 			children = (
@@ -100,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				B9D7C7183910882434437EA5 /* Locus */,
+				211EAC0E9E98C5E9F638E62C /* Packages */,
 				1034C21D9930A5F35D463962 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -224,8 +234,8 @@
 			mainGroup = 796058090ADB9656F1AC489F;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				5FEF3F7006D20A3A2B87542F /* XCRemoteSwiftPackageReference "FluidAudio" */,
 				966EE07AEAEF01A0DCD3C437 /* XCRemoteSwiftPackageReference "llama.swift" */,
+				A28A02C30D0D667D82391A73 /* XCLocalSwiftPackageReference "../FluidAudio" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1034C21D9930A5F35D463962 /* Products */;
@@ -465,15 +475,14 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCRemoteSwiftPackageReference section */
-		5FEF3F7006D20A3A2B87542F /* XCRemoteSwiftPackageReference "FluidAudio" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/FluidInference/FluidAudio.git";
-			requirement = {
-				branch = "feat/pocket-tts-streaming";
-				kind = branch;
-			};
+/* Begin XCLocalSwiftPackageReference section */
+		A28A02C30D0D667D82391A73 /* XCLocalSwiftPackageReference "../FluidAudio" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../FluidAudio;
 		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
 		966EE07AEAEF01A0DCD3C437 /* XCRemoteSwiftPackageReference "llama.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/mattt/llama.swift.git";
@@ -487,7 +496,6 @@
 /* Begin XCSwiftPackageProductDependency section */
 		5EACAD89D34895A1BE1803E7 /* FluidAudio */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = 5FEF3F7006D20A3A2B87542F /* XCRemoteSwiftPackageReference "FluidAudio" */;
 			productName = FluidAudio;
 		};
 		61D95903B0C29E3F5E5B54AF /* LlamaSwift */ = {
