@@ -22,7 +22,9 @@ The hard part of running three models at once on a phone is that they all fight 
 | **LLM** (Qwen3.5-2B) | GPU | llama.cpp via Metal, gets the GPU to itself |
 | **TTS** (PocketTTS) | Neural Engine | CoreML — shares ANE with STT but they don't overlap much |
 
-We started with [mlx-audio-swift](https://github.com/Blaizzy/mlx-audio-swift) for TTS, which uses the GPU via MLX. That meant TTS and the LLM were both competing for Metal, causing dropouts and hangs during streaming. Moving STT and TTS to [FluidAudio](https://github.com/FluidInference/FluidAudio) (CoreML/Neural Engine) fixed it and also cut TTS memory by ~55%.
+We started with [mlx-audio-swift](https://github.com/Blaizzy/mlx-audio-swift) for TTS, which uses the GPU via MLX. That meant TTS and the LLM were both competing for Metal, causing dropouts and hangs during streaming. Similarly, we tried [Moonshine](https://github.com/usefulsensors/moonshine) for STT — a promising streaming model, but it also runs on GPU/CPU via ONNX Runtime, adding to the contention and using more memory.
+
+Moving STT and TTS to [FluidAudio](https://github.com/FluidInference/FluidAudio) (CoreML/Neural Engine) fixed the contention and significantly reduced memory usage.
 
 ### Models
 
