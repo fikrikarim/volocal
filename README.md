@@ -36,7 +36,7 @@ Moving STT and TTS to [FluidAudio](https://github.com/FluidInference/FluidAudio)
 
 Why these specifically:
 
-- **Parakeet EOU** over Moonshine/Whisper — lower WER (4.87% vs 6.65%), half the parameters, and end-of-utterance detection is built into the model so you don't need a separate VAD.
+- **Parakeet EOU** over Moonshine/Whisper — lower WER (4.87% vs 6.65% Moonshine Medium), half the parameters, and end-of-utterance detection is built into the model so you don't need a separate VAD.
 - **Qwen3.5-2B** over 0.8B — MMLU-Pro nearly doubles (29.7 → 55.3). Slower (~32 vs ~70 tok/s) but the quality difference is obvious in conversation. Q4_K_S keeps it at 1.26 GB.
 - **PocketTTS** — best quality we found at this size (100M params). ~80ms to first audio, supports voice cloning from a 5-second clip.
 
