@@ -12,14 +12,11 @@
 		14831AEB8AC8821D0CFBF4BB /* SharedAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38815B92894D58A7F2BDB324 /* SharedAudioEngine.swift */; };
 		17068A82A3D939373CA837F8 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 60246BC367F0D35B48DB366B /* ContentView.swift */; };
 		224AB02BE8506825B111A108 /* SystemMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8137118A2524789F5EA27511 /* SystemMetrics.swift */; };
-		308DAD73ADA1D34E6968961C /* STTTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 198D2A475833DA8AFE581664 /* STTTestView.swift */; };
 		4603298E2C2F25C588D11CA2 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9ABFC63C1246370B27F3BEBD /* Assets.xcassets */; };
 		480C02616DE9594DEBABFAAD /* ModelRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9B31D24906082EF16253023A /* ModelRegistry.swift */; };
 		592185C7FCD34DDABCC25DB3 /* LLMManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9378E0F875785E50F196A180 /* LLMManager.swift */; };
-		63A9EE41AE575CB81CD90484 /* TTSTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A43C531A3D28443468F5316E /* TTSTestView.swift */; };
 		705D79B3BC9A2F4D7CF6B8D2 /* TTSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = FB879184A3B55FDFA9FA4933 /* TTSManager.swift */; };
 		7CC4D5A3E72BE67FC2D97A1D /* LlamaContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4D7855F413BB48497DFAF9BB /* LlamaContext.swift */; };
-		976A404EC4F6671AF1658291 /* LLMTestView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5C752D8C6F794DC70D2AB8A9 /* LLMTestView.swift */; };
 		976D8B4B49C6B6588EA59B2F /* LocusApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 03DE64DA7097F210F1075553 /* LocusApp.swift */; };
 		9B9A14A09A9386DCEB47020C /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0E357749CD02527913D259DA /* OnboardingView.swift */; };
 		9DD02CDC11CF7E3AF1642122 /* PipelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E25C27BD9BC0AE50323FDC81 /* PipelineView.swift */; };
@@ -36,11 +33,9 @@
 		03DE64DA7097F210F1075553 /* LocusApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocusApp.swift; sourceTree = "<group>"; };
 		0ADE72147986E0E082EB7D43 /* MetricsOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricsOverlay.swift; sourceTree = "<group>"; };
 		0E357749CD02527913D259DA /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
-		198D2A475833DA8AFE581664 /* STTTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STTTestView.swift; sourceTree = "<group>"; };
 		38815B92894D58A7F2BDB324 /* SharedAudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedAudioEngine.swift; sourceTree = "<group>"; };
 		4B1A1A5D084DEBFE86302A5B /* ModelLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoadingView.swift; sourceTree = "<group>"; };
 		4D7855F413BB48497DFAF9BB /* LlamaContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LlamaContext.swift; sourceTree = "<group>"; };
-		5C752D8C6F794DC70D2AB8A9 /* LLMTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMTestView.swift; sourceTree = "<group>"; };
 		60246BC367F0D35B48DB366B /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		7A495E3CE55BDD99925D94DB /* VoicePipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoicePipeline.swift; sourceTree = "<group>"; };
 		8137118A2524789F5EA27511 /* SystemMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemMetrics.swift; sourceTree = "<group>"; };
@@ -48,7 +43,6 @@
 		9378E0F875785E50F196A180 /* LLMManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMManager.swift; sourceTree = "<group>"; };
 		9ABFC63C1246370B27F3BEBD /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9B31D24906082EF16253023A /* ModelRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelRegistry.swift; sourceTree = "<group>"; };
-		A43C531A3D28443468F5316E /* TTSTestView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSTestView.swift; sourceTree = "<group>"; };
 		AEFB9A10F8784355D5344D95 /* Locus.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Locus.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BE7F27B06F0AA98E893C2E9B /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		BF80E1869973969F6CE7F378 /* FluidAudio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FluidAudio; path = ../FluidAudio; sourceTree = SOURCE_ROOT; };
@@ -112,7 +106,6 @@
 			children = (
 				4D7855F413BB48497DFAF9BB /* LlamaContext.swift */,
 				9378E0F875785E50F196A180 /* LLMManager.swift */,
-				5C752D8C6F794DC70D2AB8A9 /* LLMTestView.swift */,
 			);
 			path = LLM;
 			sourceTree = "<group>";
@@ -130,7 +123,6 @@
 			isa = PBXGroup;
 			children = (
 				FB879184A3B55FDFA9FA4933 /* TTSManager.swift */,
-				A43C531A3D28443468F5316E /* TTSTestView.swift */,
 			);
 			path = TTS;
 			sourceTree = "<group>";
@@ -188,7 +180,6 @@
 			isa = PBXGroup;
 			children = (
 				D860B809D0165F971C6074A2 /* STTManager.swift */,
-				198D2A475833DA8AFE581664 /* STTTestView.swift */,
 			);
 			path = STT;
 			sourceTree = "<group>";
@@ -280,7 +271,6 @@
 				17068A82A3D939373CA837F8 /* ContentView.swift in Sources */,
 				DEFE1DFF4315BB1793580C04 /* ConversationModel.swift in Sources */,
 				592185C7FCD34DDABCC25DB3 /* LLMManager.swift in Sources */,
-				976A404EC4F6671AF1658291 /* LLMTestView.swift in Sources */,
 				7CC4D5A3E72BE67FC2D97A1D /* LlamaContext.swift in Sources */,
 				976D8B4B49C6B6588EA59B2F /* LocusApp.swift in Sources */,
 				EE130966507E743AECFF72E9 /* MetricsOverlay.swift in Sources */,
@@ -289,12 +279,10 @@
 				9B9A14A09A9386DCEB47020C /* OnboardingView.swift in Sources */,
 				9DD02CDC11CF7E3AF1642122 /* PipelineView.swift in Sources */,
 				F893A67A4CEF0514450957F3 /* STTManager.swift in Sources */,
-				308DAD73ADA1D34E6968961C /* STTTestView.swift in Sources */,
 				127D6572514E5CA770319E4D /* SentenceBuffer.swift in Sources */,
 				14831AEB8AC8821D0CFBF4BB /* SharedAudioEngine.swift in Sources */,
 				224AB02BE8506825B111A108 /* SystemMetrics.swift in Sources */,
 				705D79B3BC9A2F4D7CF6B8D2 /* TTSManager.swift in Sources */,
-				63A9EE41AE575CB81CD90484 /* TTSTestView.swift in Sources */,
 				AC818C1406D17A241BA6F7A9 /* UnifiedModelManager.swift in Sources */,
 				11A6B800DAC8A32AFE6C2BFE /* VoicePipeline.swift in Sources */,
 			);
