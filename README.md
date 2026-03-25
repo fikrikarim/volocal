@@ -32,7 +32,7 @@ We originally used [mlx-audio-swift](https://github.com/Blaizzy/mlx-audio-swift)
 |-----------|-------|------|---------|
 | STT | [Parakeet EOU 320](https://huggingface.co/nvidia/parakeet-tdt_ctc-110m) | ~200 MB | CoreML (ANE) |
 | LLM | [Qwen3.5-2B Q4_K_S](https://huggingface.co/bartowski/Qwen_Qwen3.5-2B-GGUF) | ~1.26 GB | llama.cpp (Metal GPU) |
-| TTS | [PocketTTS](https://huggingface.co/fluidaudio/pocket-tts) | ~100 MB | CoreML (ANE) |
+| TTS | [PocketTTS](https://huggingface.co/kyutai/pocket-tts) | ~100 MB | CoreML (ANE) |
 
 - **Parakeet EOU** over Moonshine/Whisper: 4.87% WER (vs 6.65% Moonshine) at half the parameters, with native end-of-utterance detection built into the model (no separate VAD needed).
 - **Qwen3.5-2B** over 0.8B: MMLU-Pro nearly doubles (29.7 → 55.3). The speed cost (~70 → ~32 tok/s) adds ~0.9s to a typical response — worth it for noticeably better conversation quality. Q4_K_S at 1.26 GB fits comfortably in the ~3 GB iOS memory budget.
@@ -103,7 +103,7 @@ Volocal/
 ## Dependencies
 
 - [llama.swift](https://github.com/mattt/llama.swift) — Swift bindings for llama.cpp
-- [FluidAudio](https://github.com/FluidAudio/FluidAudio) — STT (Parakeet EOU) and TTS (PocketTTS) inference
+- [FluidAudio](https://github.com/FluidInference/FluidAudio) — STT (Parakeet EOU) and TTS (PocketTTS) inference
 
 Both are managed via Swift Package Manager.
 
