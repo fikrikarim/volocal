@@ -7,7 +7,7 @@ STT → LLM → TTS, streaming in real-time on your iPhone.
 ## Features
 
 - Runs entirely on-device across Neural Engine, GPU, and CPU
-- Talk naturally, get spoken responses
+- Real-time voice conversations
 - Interrupt mid-sentence (barge-in)
 - Hardware echo cancellation so the mic doesn't pick up its own output
 - Downloads all models (~2.3 GB) on first launch with per-model progress
