@@ -6,6 +6,14 @@ STT → LLM → TTS, streaming in real-time on your iPhone.
 
 > **Note:** This is a work in progress. Expect bugs.
 
+# Why?
+
+I'm [self-hosting a totally free voice AI](https://www.fikrikarim.com/bule-ai-initial-release/) on my home server to help people learn speaking English. It has tens to hundreds of monthly active users, and I've been thinking on how to keep it free while making it sustainable.
+
+The ultimate way to reduce the operational costs is to run everything on-device, eliminating any server cost. I thought this was impossible at first, given that 6 months ago I needed an RTX 5090 to run these models in real-time.
+
+So I decided to replicate the voice AI experience to fully run locally on my iPhone 15, and to my surprise, it's working better than I expected.
+
 ## Features
 
 - Runs entirely on-device across Neural Engine, GPU, and CPU
