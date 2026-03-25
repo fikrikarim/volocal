@@ -2,7 +2,7 @@ import Foundation
 import Metal
 import os
 
-private let logger = Logger(subsystem: "com.locus.app", category: "metrics")
+private let logger = Logger(subsystem: "com.volocal.app", category: "metrics")
 
 /// Tracks app memory, GPU memory, CPU usage, and thermal state in real time.
 @MainActor

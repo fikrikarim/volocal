@@ -1,7 +1,7 @@
 import Foundation
 import os
 
-private let logger = Logger(subsystem: "com.locus.app", category: "llm")
+private let logger = Logger(subsystem: "com.volocal.app", category: "llm")
 
 /// Manages LLM inference using llama.cpp via the LlamaContext actor.
 @MainActor
@@ -15,7 +15,7 @@ final class LLMManager: ObservableObject {
     private var generationTask: Task<Void, Never>?
 
     private let systemPrompt = """
-    You are Locus, a helpful voice assistant running entirely on-device. \
+    You are Volocal, a helpful voice assistant running entirely on-device. \
     Keep responses concise and conversational — typically 1-3 sentences. \
     You're speaking out loud, so avoid markdown, code blocks, or lists. \
     Be friendly, direct, and natural.

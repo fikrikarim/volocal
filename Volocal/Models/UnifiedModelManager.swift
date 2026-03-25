@@ -2,7 +2,7 @@ import Foundation
 import FluidAudio
 import os
 
-private let logger = Logger(subsystem: "com.locus.app", category: "models")
+private let logger = Logger(subsystem: "com.volocal.app", category: "models")
 
 /// Unified model manager tracking download state for all 3 models (LLM, STT, TTS).
 /// Downloads LLM from HuggingFace, STT and TTS via FluidAudio with progress.

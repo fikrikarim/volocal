@@ -4,7 +4,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$(dirname "$SCRIPT_DIR")"
 
-echo "=== Locus iOS - Setup ==="
+echo "=== Volocal iOS - Setup ==="
 echo ""
 
 # ── Step 1: Generate Xcode project ──────────────────────────────────────
@@ -15,7 +15,7 @@ cd "$PROJECT_DIR"
 
 if command -v xcodegen &> /dev/null; then
     xcodegen generate
-    echo "  Generated Locus.xcodeproj"
+    echo "  Generated Volocal.xcodeproj"
 else
     echo "  xcodegen not found. Install with: brew install xcodegen"
     echo "  Then run: cd $(basename $PROJECT_DIR) && xcodegen generate"
@@ -27,7 +27,7 @@ echo ""
 echo "[2/2] Setup complete!"
 echo ""
 echo "Next steps:"
-echo "  1. Open Locus.xcodeproj in Xcode"
+echo "  1. Open Volocal.xcodeproj in Xcode"
 echo "  2. Wait for SPM to resolve (moonshine-swift, llama-swift, FluidAudio)"
 echo "  3. Build and run on iOS Simulator or device"
 echo "  4. On first launch, download STT + LLM models (~798 MB) or tap Skip"

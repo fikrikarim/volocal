@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct LocusApp: App {
+struct VolocalApp: App {
     @StateObject private var modelManager = UnifiedModelManager()
     @StateObject private var metrics = SystemMetrics()
     @StateObject private var pipeline = VoicePipeline()

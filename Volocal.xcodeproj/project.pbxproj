@@ -1,0 +1,511 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		01354C469FA9D25F726E9E9B /* ConversationModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7C45CAC47FAC2077DBF09D6 /* ConversationModel.swift */; };
+		0D9F1920DE3CEC8F2C3DBD60 /* SentenceBuffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63C4761BFF59B998E24EDE71 /* SentenceBuffer.swift */; };
+		17BF9DA27B0DAE6195BCD874 /* ModelLoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9302DF6902D5B0BF3DBB94CC /* ModelLoadingView.swift */; };
+		2243A968E58E91F9B959F116 /* LlamaSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 6C0A850F27C81DF8E1F70522 /* LlamaSwift */; };
+		2641CA1C31825ED3240FFBBF /* MetricsOverlay.swift in Sources */ = {isa = PBXBuildFile; fileRef = CD55CD53C6E932FD238993AA /* MetricsOverlay.swift */; };
+		30DFFAC8BF2BD05FB1BEBF38 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7AC3A8FAA5BDBC2036829D04 /* ContentView.swift */; };
+		35F51AE847027348D965C33B /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B6B189BB680EF1C79BCE706 /* OnboardingView.swift */; };
+		57CDC8721D4682FA2D0ED0B1 /* LlamaContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A24B70B1FC8CE2B5CA8BEAF0 /* LlamaContext.swift */; };
+		85AED4395C4EA5F9B3BC44C0 /* STTManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = F42124AFAD76D1721B0F69AA /* STTManager.swift */; };
+		91304267999C29FCD88B2AE7 /* FluidAudio in Frameworks */ = {isa = PBXBuildFile; productRef = 85D4C9D7DD1C1EDD76869C82 /* FluidAudio */; };
+		95637663A2461440FAF22ABB /* PipelineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0043CAD5AC8C2FE722C4C74C /* PipelineView.swift */; };
+		9595744258C2683897D17578 /* SharedAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = F47F3DB48C0E4495EEF5445E /* SharedAudioEngine.swift */; };
+		A03EE7D67AD0A63FC7E16072 /* ModelRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291266CACA92E5C922EAEAD6 /* ModelRegistry.swift */; };
+		A179951230D12A847DE8C46F /* UnifiedModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2740080E7653F6B3AA1C63 /* UnifiedModelManager.swift */; };
+		A54624B24553C2B4D565D249 /* VolocalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00A9006F1E3E1FB283DCE59 /* VolocalApp.swift */; };
+		BDFBC5D0A5A65CCAB16D2A8F /* VoicePipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BD8F6E3E50B75C4A76AC5C /* VoicePipeline.swift */; };
+		C6C96C7B54DAB0D2F18C5C6D /* TTSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AAB3650E87AF43D4BB88D6 /* TTSManager.swift */; };
+		E3D279E7690E83F7E5B16D6C /* LLMManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2315FEB668579CE9B2410109 /* LLMManager.swift */; };
+		F2832130B64B921A67A30BE9 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2FCD459848B578953ED4DD1B /* Assets.xcassets */; };
+		F387267D1BD267D810C327BA /* SystemMetrics.swift in Sources */ = {isa = PBXBuildFile; fileRef = C792F48B773B8AB7FB665186 /* SystemMetrics.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		0043CAD5AC8C2FE722C4C74C /* PipelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineView.swift; sourceTree = "<group>"; };
+		174A173A569CA4BF546109AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		22F3D8E767307B1FEDAB6091 /* FluidAudio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FluidAudio; path = ../FluidAudio; sourceTree = SOURCE_ROOT; };
+		2315FEB668579CE9B2410109 /* LLMManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMManager.swift; sourceTree = "<group>"; };
+		291266CACA92E5C922EAEAD6 /* ModelRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelRegistry.swift; sourceTree = "<group>"; };
+		2B6B189BB680EF1C79BCE706 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		2FCD459848B578953ED4DD1B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		55BD8F6E3E50B75C4A76AC5C /* VoicePipeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoicePipeline.swift; sourceTree = "<group>"; };
+		5E53B5479E5395EA7890B335 /* Volocal.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Volocal.entitlements; sourceTree = "<group>"; };
+		63C4761BFF59B998E24EDE71 /* SentenceBuffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SentenceBuffer.swift; sourceTree = "<group>"; };
+		7AC3A8FAA5BDBC2036829D04 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		84AAB3650E87AF43D4BB88D6 /* TTSManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TTSManager.swift; sourceTree = "<group>"; };
+		9302DF6902D5B0BF3DBB94CC /* ModelLoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelLoadingView.swift; sourceTree = "<group>"; };
+		A24B70B1FC8CE2B5CA8BEAF0 /* LlamaContext.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LlamaContext.swift; sourceTree = "<group>"; };
+		C792F48B773B8AB7FB665186 /* SystemMetrics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SystemMetrics.swift; sourceTree = "<group>"; };
+		C7C45CAC47FAC2077DBF09D6 /* ConversationModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConversationModel.swift; sourceTree = "<group>"; };
+		CA2740080E7653F6B3AA1C63 /* UnifiedModelManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnifiedModelManager.swift; sourceTree = "<group>"; };
+		CD55CD53C6E932FD238993AA /* MetricsOverlay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetricsOverlay.swift; sourceTree = "<group>"; };
+		DFE622895A6CE2CE706ED4F1 /* Volocal.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = Volocal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		F00A9006F1E3E1FB283DCE59 /* VolocalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolocalApp.swift; sourceTree = "<group>"; };
+		F42124AFAD76D1721B0F69AA /* STTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STTManager.swift; sourceTree = "<group>"; };
+		F47F3DB48C0E4495EEF5445E /* SharedAudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedAudioEngine.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		8A56EB5B2E57B22D9FEEB5D9 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2243A968E58E91F9B959F116 /* LlamaSwift in Frameworks */,
+				91304267999C29FCD88B2AE7 /* FluidAudio in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		0E2568D678EC3CD9F996A932 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				C7C45CAC47FAC2077DBF09D6 /* ConversationModel.swift */,
+				291266CACA92E5C922EAEAD6 /* ModelRegistry.swift */,
+				2B6B189BB680EF1C79BCE706 /* OnboardingView.swift */,
+				CA2740080E7653F6B3AA1C63 /* UnifiedModelManager.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		2DA99BDC6A4A6C4056009B5D /* Debug */ = {
+			isa = PBXGroup;
+			children = (
+				CD55CD53C6E932FD238993AA /* MetricsOverlay.swift */,
+				C792F48B773B8AB7FB665186 /* SystemMetrics.swift */,
+			);
+			path = Debug;
+			sourceTree = "<group>";
+		};
+		396D22277ED6D7F5740E4856 /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		44A62F45AE2820BA006736A6 /* STT */ = {
+			isa = PBXGroup;
+			children = (
+				F42124AFAD76D1721B0F69AA /* STTManager.swift */,
+			);
+			path = STT;
+			sourceTree = "<group>";
+		};
+		4AB318961DE2BFC1B733BAFD /* App */ = {
+			isa = PBXGroup;
+			children = (
+				7AC3A8FAA5BDBC2036829D04 /* ContentView.swift */,
+				9302DF6902D5B0BF3DBB94CC /* ModelLoadingView.swift */,
+				F00A9006F1E3E1FB283DCE59 /* VolocalApp.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		5FCBF96685D02E8F557BB59C = {
+			isa = PBXGroup;
+			children = (
+				6A6557F0F633AB37555311E5 /* Packages */,
+				E0C0F140D85FD98F4070DD2E /* Volocal */,
+				72B210265CD5ECF02C57DCCF /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		6A6557F0F633AB37555311E5 /* Packages */ = {
+			isa = PBXGroup;
+			children = (
+				22F3D8E767307B1FEDAB6091 /* FluidAudio */,
+			);
+			name = Packages;
+			sourceTree = "<group>";
+		};
+		72B210265CD5ECF02C57DCCF /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				DFE622895A6CE2CE706ED4F1 /* Volocal.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		8A606C4CF7342A374C0E3652 /* LLM */ = {
+			isa = PBXGroup;
+			children = (
+				A24B70B1FC8CE2B5CA8BEAF0 /* LlamaContext.swift */,
+				2315FEB668579CE9B2410109 /* LLMManager.swift */,
+			);
+			path = LLM;
+			sourceTree = "<group>";
+		};
+		C61468C778D1F601D02541B1 /* TTS */ = {
+			isa = PBXGroup;
+			children = (
+				84AAB3650E87AF43D4BB88D6 /* TTSManager.swift */,
+			);
+			path = TTS;
+			sourceTree = "<group>";
+		};
+		E0C0F140D85FD98F4070DD2E /* Volocal */ = {
+			isa = PBXGroup;
+			children = (
+				2FCD459848B578953ED4DD1B /* Assets.xcassets */,
+				174A173A569CA4BF546109AC /* Info.plist */,
+				5E53B5479E5395EA7890B335 /* Volocal.entitlements */,
+				4AB318961DE2BFC1B733BAFD /* App */,
+				EA64CF9D2C8D5ED6A95026F0 /* Audio */,
+				2DA99BDC6A4A6C4056009B5D /* Debug */,
+				8A606C4CF7342A374C0E3652 /* LLM */,
+				0E2568D678EC3CD9F996A932 /* Models */,
+				F82DEB9392D289613455F0BB /* Pipeline */,
+				396D22277ED6D7F5740E4856 /* Resources */,
+				44A62F45AE2820BA006736A6 /* STT */,
+				C61468C778D1F601D02541B1 /* TTS */,
+			);
+			path = Volocal;
+			sourceTree = "<group>";
+		};
+		EA64CF9D2C8D5ED6A95026F0 /* Audio */ = {
+			isa = PBXGroup;
+			children = (
+				F47F3DB48C0E4495EEF5445E /* SharedAudioEngine.swift */,
+			);
+			path = Audio;
+			sourceTree = "<group>";
+		};
+		F82DEB9392D289613455F0BB /* Pipeline */ = {
+			isa = PBXGroup;
+			children = (
+				0043CAD5AC8C2FE722C4C74C /* PipelineView.swift */,
+				63C4761BFF59B998E24EDE71 /* SentenceBuffer.swift */,
+				55BD8F6E3E50B75C4A76AC5C /* VoicePipeline.swift */,
+			);
+			path = Pipeline;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		4B0D3CFCE1420835E634B20E /* Volocal */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = FFD2BFF46E63B923B976FB2B /* Build configuration list for PBXNativeTarget "Volocal" */;
+			buildPhases = (
+				C18B539337E49654FA5845F8 /* Sources */,
+				D59016C7AC77D75809C93889 /* Resources */,
+				8A56EB5B2E57B22D9FEEB5D9 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Volocal;
+			packageProductDependencies = (
+				6C0A850F27C81DF8E1F70522 /* LlamaSwift */,
+				85D4C9D7DD1C1EDD76869C82 /* FluidAudio */,
+			);
+			productName = Volocal;
+			productReference = DFE622895A6CE2CE706ED4F1 /* Volocal.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		E7C974DE5134E65D4BD94D67 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1600;
+				TargetAttributes = {
+					4B0D3CFCE1420835E634B20E = {
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = FCF1FE01F889D1C1087BC180 /* Build configuration list for PBXProject "Volocal" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = 5FCBF96685D02E8F557BB59C;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				A90BE892303E2C7C9FA62830 /* XCRemoteSwiftPackageReference "llama.swift" */,
+				84B59A96CEA61B0356FCD461 /* XCLocalSwiftPackageReference "../FluidAudio" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 72B210265CD5ECF02C57DCCF /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				4B0D3CFCE1420835E634B20E /* Volocal */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		D59016C7AC77D75809C93889 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F2832130B64B921A67A30BE9 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		C18B539337E49654FA5845F8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				30DFFAC8BF2BD05FB1BEBF38 /* ContentView.swift in Sources */,
+				01354C469FA9D25F726E9E9B /* ConversationModel.swift in Sources */,
+				E3D279E7690E83F7E5B16D6C /* LLMManager.swift in Sources */,
+				57CDC8721D4682FA2D0ED0B1 /* LlamaContext.swift in Sources */,
+				2641CA1C31825ED3240FFBBF /* MetricsOverlay.swift in Sources */,
+				17BF9DA27B0DAE6195BCD874 /* ModelLoadingView.swift in Sources */,
+				A03EE7D67AD0A63FC7E16072 /* ModelRegistry.swift in Sources */,
+				35F51AE847027348D965C33B /* OnboardingView.swift in Sources */,
+				95637663A2461440FAF22ABB /* PipelineView.swift in Sources */,
+				85AED4395C4EA5F9B3BC44C0 /* STTManager.swift in Sources */,
+				0D9F1920DE3CEC8F2C3DBD60 /* SentenceBuffer.swift in Sources */,
+				9595744258C2683897D17578 /* SharedAudioEngine.swift in Sources */,
+				F387267D1BD267D810C327BA /* SystemMetrics.swift in Sources */,
+				C6C96C7B54DAB0D2F18C5C6D /* TTSManager.swift in Sources */,
+				A179951230D12A847DE8C46F /* UnifiedModelManager.swift in Sources */,
+				BDFBC5D0A5A65CCAB16D2A8F /* VoicePipeline.swift in Sources */,
+				A54624B24553C2B4D565D249 /* VolocalApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		14AE07956A3FE1A3E3510F76 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Volocal/Volocal.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = Volocal/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.volocal.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1E2D8DD2FADEF444FDE6BDD4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = Volocal/Volocal.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				INFOPLIST_FILE = Volocal/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.volocal.app;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		6C1A4D98F1D92654D49C7DF8 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Release;
+		};
+		CDFCB77DE37DA3840D81D6F7 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
+				"EXCLUDED_ARCHS[sdk=iphonesimulator*]" = x86_64;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.9;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		FCF1FE01F889D1C1087BC180 /* Build configuration list for PBXProject "Volocal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CDFCB77DE37DA3840D81D6F7 /* Debug */,
+				6C1A4D98F1D92654D49C7DF8 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		FFD2BFF46E63B923B976FB2B /* Build configuration list for PBXNativeTarget "Volocal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1E2D8DD2FADEF444FDE6BDD4 /* Debug */,
+				14AE07956A3FE1A3E3510F76 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		84B59A96CEA61B0356FCD461 /* XCLocalSwiftPackageReference "../FluidAudio" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../FluidAudio;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A90BE892303E2C7C9FA62830 /* XCRemoteSwiftPackageReference "llama.swift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mattt/llama.swift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6C0A850F27C81DF8E1F70522 /* LlamaSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A90BE892303E2C7C9FA62830 /* XCRemoteSwiftPackageReference "llama.swift" */;
+			productName = LlamaSwift;
+		};
+		85D4C9D7DD1C1EDD76869C82 /* FluidAudio */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = FluidAudio;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = E7C974DE5134E65D4BD94D67 /* Project object */;
+}

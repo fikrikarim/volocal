@@ -2,7 +2,7 @@ import Foundation
 import Combine
 import os
 
-private let logger = Logger(subsystem: "com.locus.app", category: "pipeline")
+private let logger = Logger(subsystem: "com.volocal.app", category: "pipeline")
 
 /// Orchestrates the full voice pipeline: STT -> LLM -> TTS
 /// Listens for completed utterances from STT, generates LLM responses,

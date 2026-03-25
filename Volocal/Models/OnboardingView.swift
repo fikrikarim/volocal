@@ -16,7 +16,7 @@ struct OnboardingView: View {
                         .font(.system(size: 80))
                         .foregroundStyle(.blue)
 
-                    Text("Locus")
+                    Text("Volocal")
                         .font(.largeTitle.bold())
 
                     Text("On-device voice AI")

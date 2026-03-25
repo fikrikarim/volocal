@@ -1,6 +1,6 @@
 import Foundation
 
-/// Central registry of all models used by Locus.
+/// Central registry of all models used by Volocal.
 /// Defines metadata, download sources, and local paths.
 enum ModelRegistry {
     /// All model types used in the app

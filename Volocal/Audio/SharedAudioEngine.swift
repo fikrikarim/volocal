@@ -2,7 +2,7 @@ import Foundation
 import AVFoundation
 import os
 
-private let logger = Logger(subsystem: "com.locus.app", category: "audio")
+private let logger = Logger(subsystem: "com.volocal.app", category: "audio")
 
 /// Shared state between MainActor and the real-time audio thread.
 /// @unchecked Sendable because Bool load/store is atomic on ARM64

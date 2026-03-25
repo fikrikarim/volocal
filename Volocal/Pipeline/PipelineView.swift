@@ -82,7 +82,7 @@ struct PipelineView: View {
                 }
                 .padding(.vertical, 20)
             }
-            .navigationTitle("Locus")
+            .navigationTitle("Volocal")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {

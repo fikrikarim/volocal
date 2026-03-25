@@ -3,7 +3,7 @@ import AVFoundation
 import FluidAudio
 import os
 
-private let logger = Logger(subsystem: "com.locus.app", category: "tts")
+private let logger = Logger(subsystem: "com.volocal.app", category: "tts")
 
 /// Wraps FluidAudio's PocketTtsManager for on-device streaming text-to-speech.
 /// Uses SharedAudioEngine for audio output instead of creating its own AVAudioEngine.

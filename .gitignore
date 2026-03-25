@@ -18,14 +18,14 @@ wheels/
 # Xcode
 xcuserdata/
 DerivedData/
-Locus.xcodeproj/xcuserdata/
-Locus.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
+Volocal.xcodeproj/xcuserdata/
+Volocal.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
 
 # Frameworks (downloaded via setup.sh)
 Frameworks/
 
 # TTS vendor files (downloaded via setup.sh)
-Locus/TTS/Vendor/
+Volocal/TTS/Vendor/
 
 # Model server temp files
 .model-server/

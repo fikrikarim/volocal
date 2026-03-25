@@ -3,7 +3,7 @@ import AVFoundation
 import FluidAudio
 import os
 
-private let logger = Logger(subsystem: "com.locus.app", category: "stt")
+private let logger = Logger(subsystem: "com.volocal.app", category: "stt")
 
 /// Wraps FluidAudio's StreamingEouAsrManager for real-time speech-to-text
 /// with native end-of-utterance detection on Apple Neural Engine.

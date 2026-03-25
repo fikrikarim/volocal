@@ -12,7 +12,7 @@ PORT=8080
 # Get local IP
 LOCAL_IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null || echo "localhost")
 
-echo "=== Locus Model Server ==="
+echo "=== Volocal Model Server ==="
 echo ""
 
 # Create serving directory
