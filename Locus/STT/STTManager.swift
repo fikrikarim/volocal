@@ -17,8 +17,12 @@ final class STTManager: ObservableObject {
     /// Called when a complete utterance is detected (EOU)
     var onUtteranceCompleted: ((String) -> Void)?
 
+    /// Called when speech is first detected (partial result arrives)
+    var onSpeechDetected: (() -> Void)?
+
     private var asrManager: StreamingEouAsrManager?
     private var audioEngine: AVAudioEngine?
+    private var hasFiredSpeechDetected = false
 
     init() {}
 
@@ -41,7 +45,15 @@ final class STTManager: ObservableObject {
 
             await manager.setPartialCallback { [weak self] text in
                 Task { @MainActor in
-                    self?.partialResult = text
+                    guard let self else { return }
+                    self.partialResult = text
+                    // Require at least 2 words to trigger speech detection
+                    // (filters out echo fragments from TTS output)
+                    let wordCount = text.split(separator: " ").count
+                    if !self.hasFiredSpeechDetected && wordCount >= 2 {
+                        self.hasFiredSpeechDetected = true
+                        self.onSpeechDetected?()
+                    }
                 }
             }
 
@@ -52,6 +64,7 @@ final class STTManager: ObservableObject {
                     guard !finalText.isEmpty else { return }
                     self.transcript = finalText
                     self.partialResult = ""
+                    self.hasFiredSpeechDetected = false
                     self.onUtteranceCompleted?(finalText)
                 }
             }
@@ -74,7 +87,7 @@ final class STTManager: ObservableObject {
 
         do {
             let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playAndRecord, mode: .default, options: [.defaultToSpeaker])
+            try session.setCategory(.playAndRecord, mode: .voiceChat, options: [.defaultToSpeaker])
             try session.setActive(true)
 
             let engine = AVAudioEngine()
@@ -102,6 +115,7 @@ final class STTManager: ObservableObject {
             isListening = true
             transcript = ""
             partialResult = ""
+            hasFiredSpeechDetected = false
             error = nil
             logger.info("STT listening started")
         } catch {
@@ -123,6 +137,15 @@ final class STTManager: ObservableObject {
         }
 
         logger.info("STT listening stopped")
+    }
+
+    /// Reset ASR state for next utterance without stopping the mic.
+    func resetForNextUtterance() {
+        hasFiredSpeechDetected = false
+        partialResult = ""
+        Task {
+            await asrManager?.reset()
+        }
     }
 
     /// Simulate a transcript for testing without a real microphone.

@@ -3,6 +3,7 @@ import Foundation
 /// Orchestrates the full voice pipeline: STT -> LLM -> TTS
 /// Listens for completed utterances from STT, generates LLM responses,
 /// buffers into sentences, and sends to TTS for playback.
+/// Supports barge-in: user can speak while AI is talking to interrupt.
 @MainActor
 final class VoicePipeline: ObservableObject {
     @Published var state: PipelineState = .idle
@@ -98,9 +99,8 @@ final class VoicePipeline: ObservableObject {
         sentenceQueue.removeAll()
         sentenceBuffer.reset()
         currentResponse = ""
-
+        // Don't stop STT — mic stays open for barge-in
         state = .listening
-        sttManager.startListening()
     }
 
     // MARK: - Callbacks
@@ -112,6 +112,16 @@ final class VoicePipeline: ObservableObject {
             }
         }
 
+        sttManager.onSpeechDetected = { [weak self] in
+            Task { @MainActor in
+                guard let self else { return }
+                // Barge-in: user started speaking while AI is active
+                if self.state == .processing || self.state == .speaking {
+                    self.interrupt()
+                }
+            }
+        }
+
         sentenceBuffer.onSentenceReady = { [weak self] sentence in
             Task { @MainActor in
                 self?.handleSentence(sentence)
@@ -120,13 +130,19 @@ final class VoicePipeline: ObservableObject {
     }
 
     private func handleUtterance(_ text: String) {
+        // If AI is still active, interrupt first
+        if state == .processing || state == .speaking {
+            interrupt()
+        }
         guard state == .listening else { return }
 
         let userMessage = ConversationMessage(role: .user, text: text)
         conversationHistory.append(userMessage)
         currentTranscript = text
 
-        sttManager.stopListening()
+        // Reset ASR for next utterance (mic stays open)
+        sttManager.resetForNextUtterance()
+
         state = .processing
         currentResponse = ""
         sentenceBuffer.reset()
@@ -152,7 +168,6 @@ final class VoicePipeline: ObservableObject {
 
                 if !Task.isCancelled {
                     state = .listening
-                    sttManager.startListening()
                 }
             }
         }
