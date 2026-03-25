@@ -27,8 +27,14 @@ final class LLMManager: ObservableObject {
         llamaContext = try LlamaContext.create(path: path, contextSize: 2048)
     }
 
-    func generate(prompt: String, history: [ConversationMessage] = []) -> AsyncStream<String> {
-        AsyncStream { continuation in
+    /// Generate response from conversation history.
+    /// History should already contain the latest user message.
+    func generate(history: [ConversationMessage] = []) -> AsyncStream<String> {
+        // Cancel any previous generation first
+        generationTask?.cancel()
+        generationTask = nil
+
+        return AsyncStream { continuation in
             generationTask = Task {
                 guard let ctx = llamaContext else {
                     continuation.finish()
@@ -41,13 +47,12 @@ final class LLMManager: ObservableObject {
                     self.tokensPerSecond = 0
                 }
 
-                // Build multi-turn ChatML prompt with conversation history
+                // Build multi-turn ChatML prompt from history
                 var fullPrompt = "<|im_start|>system\n\(systemPrompt)<|im_end|>\n"
                 for message in history {
                     let role = message.role == .user ? "user" : "assistant"
                     fullPrompt += "<|im_start|>\(role)\n\(message.text)<|im_end|>\n"
                 }
-                fullPrompt += "<|im_start|>user\n\(prompt)<|im_end|>\n"
                 // Pre-fill past <think> block to force non-thinking mode
                 fullPrompt += "<|im_start|>assistant\n<think>\n</think>\n"
 
@@ -66,8 +71,10 @@ final class LLMManager: ObservableObject {
                         let elapsed = CFAbsoluteTimeGetCurrent() - startTime
                         let tps = elapsed > 0 ? Double(tokenCount) / elapsed : 0
 
+                        #if DEBUG
                         let hex = token.utf8.map { String(format: "%02x", $0) }.joined(separator: " ")
                         logger.debug("token[\(tokenCount)]: \"\(token)\" hex=[\(hex)]")
+                        #endif
 
                         // Strip non-ASCII characters
                         let cleaned = String(token.unicodeScalars.filter { $0.isASCII })

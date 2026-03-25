@@ -2,14 +2,15 @@ import SwiftUI
 
 @main
 struct LocusApp: App {
-    @StateObject private var modelManager = ModelManager()
+    @StateObject private var modelManager = UnifiedModelManager()
     @StateObject private var metrics = SystemMetrics()
     @StateObject private var pipeline = VoicePipeline()
+    @Environment(\.scenePhase) private var scenePhase
 
     var body: some Scene {
         WindowGroup {
             if !modelManager.allModelsReady {
-                ModelDownloadView()
+                OnboardingView()
                     .environmentObject(modelManager)
             } else if !pipeline.isReady {
                 ModelLoadingView()
@@ -27,6 +28,16 @@ struct LocusApp: App {
                     .environmentObject(metrics)
                     .environmentObject(pipeline)
                     .overlay { MetricsOverlay().environmentObject(metrics) }
+            }
+        }
+        .onChange(of: scenePhase) { _, newPhase in
+            switch newPhase {
+            case .active:
+                metrics.startMonitoring()
+            case .inactive, .background:
+                metrics.stopMonitoring()
+            @unknown default:
+                break
             }
         }
     }

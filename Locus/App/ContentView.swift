@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @EnvironmentObject var modelManager: ModelManager
+    @EnvironmentObject var modelManager: UnifiedModelManager
 
     var body: some View {
         TabView {
@@ -10,6 +10,7 @@ struct ContentView: View {
                     Label("Pipeline", systemImage: "waveform")
                 }
 
+            #if DEBUG
             STTTestView()
                 .tabItem {
                     Label("STT", systemImage: "mic.fill")
@@ -24,6 +25,7 @@ struct ContentView: View {
                 .tabItem {
                     Label("TTS", systemImage: "speaker.wave.3.fill")
                 }
+            #endif
         }
     }
 }

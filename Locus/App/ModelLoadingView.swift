@@ -17,6 +17,14 @@ struct ModelLoadingView: View {
                 .font(.subheadline)
                 .foregroundStyle(.secondary)
 
+            if let error = pipeline.currentError {
+                Text(error)
+                    .font(.caption)
+                    .foregroundStyle(.red)
+                    .padding(.horizontal)
+                    .multilineTextAlignment(.center)
+            }
+
             Spacer()
         }
         .frame(maxWidth: .infinity)

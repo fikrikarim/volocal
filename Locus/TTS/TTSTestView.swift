@@ -2,6 +2,7 @@ import SwiftUI
 
 struct TTSTestView: View {
     @StateObject private var ttsManager = TTSManager()
+    @StateObject private var sharedAudio = SharedAudioEngine()
     @State private var inputText = "Hello! I am Locus, your on-device voice assistant."
 
     var body: some View {
@@ -88,6 +89,8 @@ struct TTSTestView: View {
             .padding(.vertical)
             .navigationTitle("Text-to-Speech")
             .task {
+                sharedAudio.start()
+                ttsManager.sharedAudio = sharedAudio
                 await ttsManager.initialize()
             }
         }

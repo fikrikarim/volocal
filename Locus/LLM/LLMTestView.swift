@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct LLMTestView: View {
-    @EnvironmentObject var modelManager: ModelManager
+    @EnvironmentObject var modelManager: UnifiedModelManager
     @StateObject private var llmManager = LLMManager()
     @State private var inputText = ""
     @State private var isModelLoaded = false
@@ -91,7 +91,8 @@ struct LLMTestView: View {
         inputText = ""
 
         Task {
-            for await _ in llmManager.generate(prompt: prompt) {
+            let history = [ConversationMessage(role: .user, text: prompt)]
+            for await _ in llmManager.generate(history: history) {
                 // Tokens are accumulated in llmManager.response
             }
         }

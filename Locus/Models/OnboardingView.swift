@@ -1,7 +1,8 @@
 import SwiftUI
 
-struct ModelDownloadView: View {
-    @EnvironmentObject var modelManager: ModelManager
+/// Onboarding screen showing all model download status with per-model progress.
+struct OnboardingView: View {
+    @EnvironmentObject var modelManager: UnifiedModelManager
     @State private var isDownloading = false
 
     var body: some View {
@@ -24,22 +25,23 @@ struct ModelDownloadView: View {
                 }
 
                 // Model status cards
-                VStack(spacing: 16) {
-                    ModelStatusRow(
-                        name: "Language Model",
-                        detail: ModelManager.llmModel.totalSize,
-                        icon: "brain",
-                        progress: modelManager.llmDownloadProgress,
-                        isReady: modelManager.llmReady
-                    )
+                VStack(spacing: 12) {
+                    ForEach(ModelRegistry.ModelType.allCases) { type in
+                        ModelStatusCard(
+                            type: type,
+                            state: modelManager.modelStates[type] ?? .notDownloaded,
+                            onRetry: {
+                                Task { await modelManager.retryModel(type) }
+                            }
+                        )
+                    }
                 }
                 .padding(.horizontal)
 
-                if let currentDownload = modelManager.currentDownload {
-                    Text("Downloading \(currentDownload)...")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+                // Wi-Fi recommendation
+                Text("Recommended: download over Wi-Fi (~1.5 GB total)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
 
                 Spacer()
 
@@ -57,7 +59,7 @@ struct ModelDownloadView: View {
                                 .tint(.white)
                                 .padding(.trailing, 4)
                         }
-                        Text(isDownloading ? "Downloading..." : "Download Models (~1.26 GB)")
+                        Text(isDownloading ? "Downloading..." : "Download All Models")
                     }
                     .font(.headline)
                     .frame(maxWidth: .infinity)
@@ -74,58 +76,88 @@ struct ModelDownloadView: View {
                         .padding(.horizontal)
                 }
 
-                // Skip button (for development)
+                #if DEBUG
                 Button("Skip (use placeholder data)") {
-                    modelManager.llmReady = true
+                    modelManager.modelStates[.llm] = .downloaded
+                    modelManager.modelStates[.stt] = .downloaded
+                    modelManager.modelStates[.tts] = .downloaded
                 }
                 .font(.caption)
                 .foregroundStyle(.secondary)
-                .padding(.bottom)
+                #endif
+
+                Spacer().frame(height: 20)
             }
             .navigationTitle("")
         }
     }
 }
 
-// MARK: - Model Status Row
+// MARK: - Model Status Card
 
-struct ModelStatusRow: View {
-    let name: String
-    let detail: String
-    let icon: String
-    let progress: Double
-    let isReady: Bool
+struct ModelStatusCard: View {
+    let type: ModelRegistry.ModelType
+    let state: UnifiedModelManager.ModelState
+    var onRetry: (() -> Void)?
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: icon)
+            Image(systemName: type.icon)
                 .font(.title3)
                 .frame(width: 32)
-                .foregroundStyle(isReady ? .green : .secondary)
+                .foregroundStyle(state.isReady ? .green : .secondary)
 
             VStack(alignment: .leading, spacing: 4) {
                 HStack {
-                    Text(name)
+                    Text(type.displayName)
                         .font(.body.weight(.medium))
                     Spacer()
-                    Text(isReady ? "Ready" : detail)
-                        .font(.caption)
-                        .foregroundStyle(isReady ? .green : .secondary)
+                    statusLabel
                 }
 
-                if progress > 0 && !isReady {
+                if case .downloading(let progress) = state {
                     ProgressView(value: progress)
                         .tint(.blue)
                 }
             }
 
-            if isReady {
+            if state.isReady {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(.green)
+            } else if case .error = state {
+                Button {
+                    onRetry?()
+                } label: {
+                    Image(systemName: "arrow.clockwise.circle.fill")
+                        .foregroundStyle(.orange)
+                }
             }
         }
         .padding()
         .background(Color(.systemGroupedBackground))
         .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    @ViewBuilder
+    private var statusLabel: some View {
+        switch state {
+        case .notDownloaded:
+            Text(type.sizeDescription)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        case .downloading(let progress):
+            Text("\(Int(progress * 100))%")
+                .font(.caption.monospacedDigit())
+                .foregroundStyle(.blue)
+        case .downloaded:
+            Text("Ready")
+                .font(.caption)
+                .foregroundStyle(.green)
+        case .error(let msg):
+            Text(msg)
+                .font(.caption)
+                .foregroundStyle(.red)
+                .lineLimit(1)
+        }
     }
 }

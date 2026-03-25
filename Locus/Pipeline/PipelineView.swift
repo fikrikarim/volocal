@@ -42,11 +42,19 @@ struct PipelineView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
 
-                    // Current transcript while listening
-                    if pipeline.state == .listening && !pipeline.sttManager.partialResult.isEmpty {
-                        Text(pipeline.sttManager.partialResult)
+                    // Current transcript while listening (uses pipeline.partialTranscript)
+                    if pipeline.state == .listening && !pipeline.partialTranscript.isEmpty {
+                        Text(pipeline.partialTranscript)
                             .font(.caption)
                             .foregroundStyle(.blue)
+                    }
+
+                    // Error display
+                    if let error = pipeline.currentError {
+                        Text(error)
+                            .font(.caption)
+                            .foregroundStyle(.red)
+                            .padding(.horizontal)
                     }
 
                     // Mic button

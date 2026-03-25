@@ -39,9 +39,31 @@ actor LlamaContext {
     private var nDecode: Int32 = 0
     private var isDone: Bool = false
 
+    // Static ref-counted backend init/free — called once, not per instance
+    private static var backendRefCount = 0
+    private static let backendLock = NSLock()
+
+    private static func retainBackend() {
+        backendLock.lock()
+        defer { backendLock.unlock() }
+        if backendRefCount == 0 {
+            llama_backend_init()
+        }
+        backendRefCount += 1
+    }
+
+    private static func releaseBackend() {
+        backendLock.lock()
+        defer { backendLock.unlock() }
+        backendRefCount -= 1
+        if backendRefCount == 0 {
+            llama_backend_free()
+        }
+    }
+
     /// Create a new LlamaContext by loading a GGUF model file.
     static func create(path: String, contextSize: UInt32 = 2048) throws -> LlamaContext {
-        llama_backend_init()
+        retainBackend()
 
         var modelParams = llama_model_default_params()
         #if targetEnvironment(simulator)
@@ -92,7 +114,7 @@ actor LlamaContext {
         llama_batch_free(batch)
         llama_free(context)
         llama_model_free(model)
-        llama_backend_free()
+        LlamaContext.releaseBackend()
     }
 
     /// Tokenize and evaluate the prompt, preparing for token generation.

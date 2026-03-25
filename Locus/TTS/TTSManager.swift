@@ -6,7 +6,7 @@ import os
 private let logger = Logger(subsystem: "com.locus.app", category: "tts")
 
 /// Wraps FluidAudio's PocketTtsManager for on-device streaming text-to-speech.
-/// Models are auto-downloaded on first initialize() call.
+/// Uses SharedAudioEngine for audio output instead of creating its own AVAudioEngine.
 @MainActor
 final class TTSManager: ObservableObject {
     @Published var isSpeaking: Bool = false
@@ -14,14 +14,12 @@ final class TTSManager: ObservableObject {
     @Published var error: String?
 
     private var engine: PocketTtsManager?
-    private var audioEngine: AVAudioEngine?
-    private var playerNode: AVAudioPlayerNode?
     private var speakTask: Task<Void, Never>?
     private var hasTrackedFirstInference = false
-    private var queuedBuffers = 0
     var metrics: SystemMetrics?
 
-    private let sampleRate = Double(PocketTtsConstants.audioSampleRate) // 24000
+    /// Shared audio engine — injected by VoicePipeline
+    weak var sharedAudio: SharedAudioEngine?
 
     static let voiceNames = [
         "alba", "marius", "javert", "jean",
@@ -50,12 +48,11 @@ final class TTSManager: ObservableObject {
         }
     }
 
-    /// Synthesize text via streaming and play frames as they arrive.
+    /// Synthesize text via streaming and play frames through shared audio engine.
     func speak(_ text: String) async {
         guard !text.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else { return }
 
         speakTask?.cancel()
-        stopAudioEngine()
 
         isSpeaking = true
         error = nil
@@ -66,14 +63,11 @@ final class TTSManager: ObservableObject {
                 guard let engine = engine else {
                     throw TTSError.engineNotLoaded
                 }
+                guard let sharedAudio else {
+                    throw TTSError.noSharedAudio
+                }
 
                 logger.info("speak start: \"\(text)\"")
-
-                let session = AVAudioSession.sharedInstance()
-                try session.setCategory(.playAndRecord, mode: .voiceChat, options: [.defaultToSpeaker])
-                try session.setActive(true)
-
-                try startAudioEngine()
 
                 if !hasTrackedFirstInference {
                     metrics?.beginTracking("TTS (PocketTTS)")
@@ -102,18 +96,13 @@ final class TTSManager: ObservableObject {
 
                     chunkCount += 1
                     logger.debug("chunk \(chunkCount): \(frame.samples.count) samples")
-                    scheduleAudioFrame(frame.samples)
+                    sharedAudio.scheduleTTSBuffer(frame.samples)
                 }
 
                 logger.info("speak generation done: \(chunkCount) chunks")
 
-                if !Task.isCancelled {
-                    if chunkCount > 0 {
-                        // Wait for playback to complete
-                        while queuedBuffers > 0 && !Task.isCancelled {
-                            try await Task.sleep(for: .milliseconds(50))
-                        }
-                    }
+                if !Task.isCancelled && chunkCount > 0 {
+                    await sharedAudio.waitForPlaybackCompletion()
                 }
             } catch {
                 if !Task.isCancelled {
@@ -121,12 +110,12 @@ final class TTSManager: ObservableObject {
                     self.error = "TTS failed: \(error.localizedDescription)"
                 }
             }
-            stopAudioEngine()
             if !Task.isCancelled {
                 self.isSpeaking = false
             }
             logger.info("speak end")
         }
+        // Set speakTask BEFORE await to avoid race condition (bug #2.10)
         speakTask = task
         await task.value
     }
@@ -135,78 +124,21 @@ final class TTSManager: ObservableObject {
     func stop() {
         speakTask?.cancel()
         speakTask = nil
-        stopAudioEngine()
+        sharedAudio?.stopPlayback()
         isSpeaking = false
-    }
-
-    // MARK: - Audio Engine
-
-    private func startAudioEngine() throws {
-        let engine = AVAudioEngine()
-        let node = AVAudioPlayerNode()
-
-        let format = AVAudioFormat(
-            commonFormat: .pcmFormatFloat32,
-            sampleRate: sampleRate,
-            channels: 1,
-            interleaved: false
-        )!
-
-        engine.attach(node)
-        engine.connect(node, to: engine.mainMixerNode, format: format)
-        engine.prepare()
-        try engine.start()
-        node.play()
-
-        self.audioEngine = engine
-        self.playerNode = node
-        self.queuedBuffers = 0
-    }
-
-    private func stopAudioEngine() {
-        playerNode?.stop()
-        audioEngine?.stop()
-        audioEngine = nil
-        playerNode = nil
-        queuedBuffers = 0
-    }
-
-    private func scheduleAudioFrame(_ samples: [Float]) {
-        guard let node = playerNode else { return }
-
-        let format = AVAudioFormat(
-            commonFormat: .pcmFormatFloat32,
-            sampleRate: sampleRate,
-            channels: 1,
-            interleaved: false
-        )!
-
-        guard let buffer = AVAudioPCMBuffer(pcmFormat: format, frameCapacity: AVAudioFrameCount(samples.count)) else {
-            return
-        }
-        buffer.frameLength = AVAudioFrameCount(samples.count)
-        if let channelData = buffer.floatChannelData {
-            samples.withUnsafeBufferPointer { src in
-                channelData[0].update(from: src.baseAddress!, count: samples.count)
-            }
-        }
-
-        queuedBuffers += 1
-        node.scheduleBuffer(buffer, completionCallbackType: .dataConsumed) { [weak self] _ in
-            Task { @MainActor in
-                self?.queuedBuffers = max((self?.queuedBuffers ?? 1) - 1, 0)
-            }
-        }
     }
 }
 
 enum TTSError: LocalizedError {
     case engineNotLoaded
+    case noSharedAudio
 
     var errorDescription: String? {
         switch self {
         case .engineNotLoaded:
             return "TTS engine not loaded. Call initialize() first."
+        case .noSharedAudio:
+            return "No shared audio engine available."
         }
     }
 }

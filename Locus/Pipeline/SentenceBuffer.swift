@@ -2,12 +2,15 @@ import Foundation
 
 /// Accumulates streaming LLM tokens and emits complete sentences.
 /// Detects sentence boundaries at `.`, `!`, `?` followed by whitespace or end-of-stream.
+/// Also splits on `:` and `;` as secondary clause boundaries, and forces split at ~200 chars.
 final class SentenceBuffer {
     private var buffer = ""
-    private let sentenceEndings: CharacterSet = CharacterSet(charactersIn: ".!?")
 
     /// Called when a complete sentence is ready for TTS
     var onSentenceReady: ((String) -> Void)?
+
+    /// Maximum characters before forcing a split at nearest word boundary
+    private let maxChars = 200
 
     /// Add a token to the buffer. May trigger onSentenceReady if a sentence boundary is found.
     func append(_ token: String) {
@@ -22,7 +25,6 @@ final class SentenceBuffer {
                 onSentenceReady?(sentence)
             }
 
-            // Remove the emitted sentence from the buffer
             let nextIndex = buffer.index(after: range.upperBound)
             if nextIndex < buffer.endIndex {
                 buffer = String(buffer[nextIndex...])
@@ -30,6 +32,11 @@ final class SentenceBuffer {
             } else {
                 buffer = ""
             }
+        }
+
+        // Force split if buffer exceeds max length
+        if buffer.count > maxChars {
+            forceSplitAtWordBoundary()
         }
     }
 
@@ -50,21 +57,71 @@ final class SentenceBuffer {
     // MARK: - Private
 
     private func findSentenceBoundary() -> Range<String.Index>? {
-        // Only split at sentence-ending punctuation (.!?) followed by space/newline.
-        // PocketTTS handles its own internal chunking at ≤50 tokens
-        // (sentences → clauses → word boundaries), so we should not
-        // split at commas or word counts here.
         for i in buffer.indices {
             let char = buffer[i]
-            if char == "." || char == "!" || char == "?" {
-                let nextIndex = buffer.index(after: i)
-                if nextIndex >= buffer.endIndex { continue }
-                let nextChar = buffer[nextIndex]
+            let nextIndex = buffer.index(after: i)
+            guard nextIndex < buffer.endIndex else { continue }
+            let nextChar = buffer[nextIndex]
+
+            // Primary boundaries: .!?
+            if char == "!" || char == "?" {
                 if nextChar == " " || nextChar == "\n" || nextChar == "\"" || nextChar == "\u{201D}" {
+                    return i..<nextIndex
+                }
+            }
+
+            // Period: only split if next char is uppercase (avoids Dr., 3.14, U.S.)
+            if char == "." {
+                if nextChar == " " || nextChar == "\n" {
+                    // Check if char after space is uppercase
+                    let afterSpace = buffer.index(after: nextIndex)
+                    if afterSpace < buffer.endIndex {
+                        let charAfter = buffer[afterSpace]
+                        if charAfter.isUppercase {
+                            return i..<nextIndex
+                        }
+                    }
+                    // Also split on period + quote
+                } else if nextChar == "\"" || nextChar == "\u{201D}" {
+                    return i..<nextIndex
+                }
+            }
+
+            // Secondary boundaries: : and ; (clause boundaries)
+            if char == ":" || char == ";" {
+                if nextChar == " " || nextChar == "\n" {
                     return i..<nextIndex
                 }
             }
         }
         return nil
+    }
+
+    /// Force a split at the nearest word boundary when buffer is too long.
+    private func forceSplitAtWordBoundary() {
+        // Find last space before maxChars
+        var splitIndex = buffer.startIndex
+        for i in buffer.indices {
+            if buffer.distance(from: buffer.startIndex, to: i) >= maxChars { break }
+            if buffer[i] == " " {
+                splitIndex = i
+            }
+        }
+
+        // If we found a space to split on
+        if splitIndex > buffer.startIndex {
+            let sentence = String(buffer[buffer.startIndex..<splitIndex])
+                .trimmingCharacters(in: .whitespacesAndNewlines)
+            if !sentence.isEmpty {
+                onSentenceReady?(sentence)
+            }
+
+            let nextIndex = buffer.index(after: splitIndex)
+            if nextIndex < buffer.endIndex {
+                buffer = String(buffer[nextIndex...])
+            } else {
+                buffer = ""
+            }
+        }
     }
 }

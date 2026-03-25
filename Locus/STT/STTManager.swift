@@ -7,6 +7,7 @@ private let logger = Logger(subsystem: "com.locus.app", category: "stt")
 
 /// Wraps FluidAudio's StreamingEouAsrManager for real-time speech-to-text
 /// with native end-of-utterance detection on Apple Neural Engine.
+/// Uses SharedAudioEngine for mic input instead of creating its own AVAudioEngine.
 @MainActor
 final class STTManager: ObservableObject {
     @Published var transcript: String = ""
@@ -20,16 +21,22 @@ final class STTManager: ObservableObject {
     /// Called when speech is first detected (partial result arrives)
     var onSpeechDetected: (() -> Void)?
 
+    /// Shared audio engine — injected by VoicePipeline
+    weak var sharedAudio: SharedAudioEngine?
+
     private var asrManager: StreamingEouAsrManager?
-    private var audioEngine: AVAudioEngine?
     private var hasFiredSpeechDetected = false
+    private var isStopping = false
+
+    /// Serial stream for backpressure — prevents unbounded Task spawning per audio buffer
+    private var bufferContinuation: AsyncStream<AVAudioPCMBuffer>.Continuation?
+    private var processingTask: Task<Void, Never>?
 
     init() {}
 
     /// Download Parakeet EOU models from HuggingFace and load into memory.
     func initialize() async {
         do {
-            // Download models if not already cached
             let modelsDir = Self.modelsDirectory()
             let modelDir = modelsDir.appendingPathComponent(Repo.parakeetEou320.folderName)
 
@@ -40,15 +47,12 @@ final class STTManager: ObservableObject {
                 logger.info("Parakeet EOU models downloaded")
             }
 
-            // Create and configure manager
             let manager = StreamingEouAsrManager(chunkSize: .ms320, eouDebounceMs: 300)
 
             await manager.setPartialCallback { [weak self] text in
                 Task { @MainActor in
-                    guard let self else { return }
+                    guard let self, !self.isStopping else { return }
                     self.partialResult = text
-                    // Require at least 2 words to trigger speech detection
-                    // (filters out echo fragments from TTS output)
                     let wordCount = text.split(separator: " ").count
                     if !self.hasFiredSpeechDetected && wordCount >= 2 {
                         self.hasFiredSpeechDetected = true
@@ -59,7 +63,7 @@ final class STTManager: ObservableObject {
 
             await manager.setEouCallback { [weak self] text in
                 Task { @MainActor in
-                    guard let self else { return }
+                    guard let self, !self.isStopping else { return }
                     let finalText = text.trimmingCharacters(in: .whitespacesAndNewlines)
                     guard !finalText.isEmpty else { return }
                     self.transcript = finalText
@@ -84,54 +88,57 @@ final class STTManager: ObservableObject {
             if asrManager == nil { error = "STT not initialized" }
             return
         }
+        guard let sharedAudio else {
+            error = "No shared audio engine"
+            return
+        }
 
-        do {
-            let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playAndRecord, mode: .voiceChat, options: [.defaultToSpeaker])
-            try session.setActive(true)
+        isStopping = false
 
-            let engine = AVAudioEngine()
-            let inputNode = engine.inputNode
-            let inputFormat = inputNode.outputFormat(forBus: 0)
+        // Set up serial AsyncStream for backpressure
+        let (stream, continuation) = AsyncStream.makeStream(of: AVAudioPCMBuffer.self)
+        self.bufferContinuation = continuation
 
-            let manager = asrManager!
-            inputNode.installTap(onBus: 0, bufferSize: 4096, format: inputFormat) { [weak self] buffer, _ in
-                // Process directly on background — don't route through MainActor
-                Task {
-                    do {
-                        _ = try await manager.process(audioBuffer: buffer)
-                    } catch {
-                        await MainActor.run {
-                            self?.error = "STT error: \(error.localizedDescription)"
-                        }
+        let manager = asrManager!
+        processingTask = Task {
+            for await buffer in stream {
+                guard !Task.isCancelled else { break }
+                do {
+                    _ = try await manager.process(audioBuffer: buffer)
+                } catch {
+                    await MainActor.run {
+                        self.error = "STT error: \(error.localizedDescription)"
                     }
                 }
             }
-
-            engine.prepare()
-            try engine.start()
-
-            self.audioEngine = engine
-            isListening = true
-            transcript = ""
-            partialResult = ""
-            hasFiredSpeechDetected = false
-            error = nil
-            logger.info("STT listening started")
-        } catch {
-            self.error = "Failed to start: \(error.localizedDescription)"
-            logger.error("Failed to start listening: \(error.localizedDescription)")
         }
+
+        // Start mic capture with VP AEC (restarts engine with tap installed).
+        // Set bridge continuation so tap handler delivers buffers to our stream.
+        sharedAudio.bridge.inputContinuation = continuation
+        sharedAudio.beginInputCapture()
+
+        isListening = true
+        transcript = ""
+        partialResult = ""
+        hasFiredSpeechDetected = false
+        error = nil
+        logger.info("STT listening started")
     }
 
     func stopListening() {
-        audioEngine?.inputNode.removeTap(onBus: 0)
-        audioEngine?.stop()
-        audioEngine = nil
+        isStopping = true
+
+        // Stop mic capture and disconnect from stream
+        sharedAudio?.endInputCapture()
+        bufferContinuation?.finish()
+        bufferContinuation = nil
+        processingTask?.cancel()
+        processingTask = nil
+
         isListening = false
 
         Task {
-            // Flush remaining audio before resetting
             _ = try? await asrManager?.finish()
             await asrManager?.reset()
         }
@@ -157,7 +164,7 @@ final class STTManager: ObservableObject {
 
     // MARK: - Private
 
-    private static func modelsDirectory() -> URL {
+    static func modelsDirectory() -> URL {
         let docs = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         let dir = docs.appendingPathComponent("models", isDirectory: true)
         try? FileManager.default.createDirectory(at: dir, withIntermediateDirectories: true)

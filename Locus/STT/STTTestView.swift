@@ -1,8 +1,9 @@
 import SwiftUI
 
 struct STTTestView: View {
-    @EnvironmentObject var modelManager: ModelManager
+    @EnvironmentObject var modelManager: UnifiedModelManager
     @StateObject private var sttManager = STTManager()
+    @StateObject private var sharedAudio = SharedAudioEngine()
     @State private var simulatedText = ""
 
     var body: some View {
@@ -73,6 +74,8 @@ struct STTTestView: View {
             .padding(.vertical)
             .navigationTitle("Speech-to-Text")
             .task {
+                sharedAudio.start()
+                sttManager.sharedAudio = sharedAudio
                 await sttManager.initialize()
             }
         }
