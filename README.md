@@ -4,6 +4,8 @@ Fully local voice AI for iOS. No cloud, no API keys, no internet after setup.
 
 STT → LLM → TTS, streaming in real-time on your iPhone.
 
+> **Note:** This is a work in progress. Expect bugs.
+
 ## Features
 
 - Runs entirely on-device across Neural Engine, GPU, and CPU
@@ -91,6 +93,15 @@ Volocal/
 - [FluidAudio](https://github.com/FluidInference/FluidAudio) — Parakeet EOU (STT) and PocketTTS (TTS)
 
 Both pulled in via SPM.
+
+## Acknowledgements
+
+- [FluidAudio](https://github.com/FluidInference/FluidAudio) by FluidInference — CoreML implementations of Parakeet EOU and PocketTTS that make the Neural Engine strategy possible
+- [llama.swift](https://github.com/mattt/llama.swift) by Mattt — clean Swift bindings for llama.cpp
+- [llama.cpp](https://github.com/ggml-org/llama.cpp) by ggml — the LLM inference engine
+- [Qwen3.5](https://huggingface.co/Qwen/Qwen3.5-2B) by Qwen — the language model
+- [Parakeet EOU](https://huggingface.co/nvidia/parakeet-tdt_ctc-110m) by NVIDIA NeMo — the speech recognition model
+- [PocketTTS](https://github.com/kyutai-labs/pocket-tts) by Kyutai — the text-to-speech model
 
 ## License
 
