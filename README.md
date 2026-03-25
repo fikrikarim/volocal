@@ -42,7 +42,7 @@ We originally used [mlx-audio-swift](https://github.com/Blaizzy/mlx-audio-swift)
 
 A single `AVAudioEngine` is shared by STT and TTS, with `setVoiceProcessingEnabled(true)` on both input and output nodes. This enables Apple's hardware acoustic echo cancellation (AEC), so the AI doesn't hear its own voice — critical for barge-in to work without a speaking gate that would block the microphone.
 
-Total memory footprint: ~1.75 GB (well under the ~3 GB iOS app limit on iPhone 15).
+Total memory footprint: ~1.2 GB (well under the ~3 GB iOS app limit on iPhone 15).
 
 ## Requirements
 
