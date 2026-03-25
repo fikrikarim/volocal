@@ -12,13 +12,37 @@ Fully local voice AI assistant for iOS. Everything runs on-device — no cloud, 
 - **Echo cancellation** — Voice Processing AEC prevents the AI from hearing its own output
 - **Automatic model download** — first launch downloads all models (~1.5 GB) with per-model progress
 
-## Models
+## Why This Stack
+
+Running three models simultaneously on a phone means every component competes for the same limited hardware. The key insight behind Volocal's architecture is **distributing compute across all three silicon units** — CPU, GPU, and Neural Engine — so nothing contends.
+
+### Compute distribution
+
+| Component | Compute | Why |
+|-----------|---------|-----|
+| **STT** (Parakeet EOU) | Neural Engine | CoreML, frees CPU and GPU entirely |
+| **LLM** (Qwen3.5-2B) | GPU (Metal) | llama.cpp with full Metal offload, has the GPU to itself |
+| **TTS** (PocketTTS) | Neural Engine | CoreML, shares ANE with STT but they rarely overlap |
+
+We originally used [mlx-audio-swift](https://github.com/Blaizzy/mlx-audio-swift) for TTS, which runs on the GPU via MLX. This caused GPU contention with the LLM — both fought for Metal compute time during streaming, leading to audio dropouts and hangs. Switching TTS (and STT) to [FluidAudio](https://github.com/FluidInference/FluidAudio) moved both to the Neural Engine via CoreML, giving the LLM exclusive GPU access. This also cut TTS memory by ~55%.
+
+### Model choices
 
 | Component | Model | Size | Runtime |
 |-----------|-------|------|---------|
 | STT | [Parakeet EOU 320](https://huggingface.co/nvidia/parakeet-tdt_ctc-110m) | ~200 MB | CoreML (ANE) |
 | LLM | [Qwen3.5-2B Q4_K_S](https://huggingface.co/bartowski/Qwen_Qwen3.5-2B-GGUF) | ~1.26 GB | llama.cpp (Metal GPU) |
 | TTS | [PocketTTS](https://huggingface.co/fluidaudio/pocket-tts) | ~100 MB | CoreML (ANE) |
+
+- **Parakeet EOU** over Moonshine/Whisper: 4.87% WER (vs 6.65% Moonshine) at half the parameters, with native end-of-utterance detection built into the model (no separate VAD needed).
+- **Qwen3.5-2B** over 0.8B: MMLU-Pro nearly doubles (29.7 → 55.3). The speed cost (~70 → ~32 tok/s) adds ~0.9s to a typical response — worth it for noticeably better conversation quality. Q4_K_S at 1.26 GB fits comfortably in the ~3 GB iOS memory budget.
+- **PocketTTS**: Best speech quality at 100M params (1.84% WER, lower than models 7x larger), with voice cloning from 5 seconds of reference audio and ~80ms time-to-first-audio.
+
+### Audio architecture
+
+A single `AVAudioEngine` is shared by STT and TTS, with `setVoiceProcessingEnabled(true)` on both input and output nodes. This enables Apple's hardware acoustic echo cancellation (AEC), so the AI doesn't hear its own voice — critical for barge-in to work without a speaking gate that would block the microphone.
+
+Total memory footprint: ~1.75 GB (well under the ~3 GB iOS app limit on iPhone 15).
 
 ## Requirements
 
