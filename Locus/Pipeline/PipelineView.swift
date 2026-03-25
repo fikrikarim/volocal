@@ -83,6 +83,16 @@ struct PipelineView: View {
                 .padding(.vertical, 20)
             }
             .navigationTitle("Locus")
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button {
+                        pipeline.resetChat()
+                    } label: {
+                        Image(systemName: "arrow.counterclockwise")
+                    }
+                    .disabled(pipeline.conversationHistory.isEmpty)
+                }
+            }
         }
     }
 

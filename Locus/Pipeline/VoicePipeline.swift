@@ -108,6 +108,19 @@ final class VoicePipeline: ObservableObject {
         }
     }
 
+    func resetChat() {
+        if state == .processing || state == .speaking {
+            interrupt()
+        }
+        if state == .listening {
+            stopListening()
+        }
+        conversationHistory.removeAll()
+        currentTranscript = ""
+        currentResponse = ""
+        currentError = nil
+    }
+
     // MARK: - Pipeline Control
 
     private func startListening() {
