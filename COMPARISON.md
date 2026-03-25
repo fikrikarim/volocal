@@ -11,8 +11,10 @@
 3. [STT: Moonshine Medium Streaming vs Parakeet EOU 120M](#3-stt-moonshine-medium-streaming-vs-parakeet-eou-120m)
 4. [TTS: mlx-audio-swift vs FluidAudio](#4-tts-mlx-audio-swift-vs-fluidaudio)
 5. [Architecture: Compute Distribution](#5-architecture-compute-distribution)
-6. [Recommendations](#6-recommendations)
-7. [References](#7-references)
+6. [Voice Pipeline Frameworks](#6-voice-pipeline-frameworks)
+7. [Patterns to Adopt](#7-patterns-to-adopt-from-pipecatlivekit)
+8. [Recommendations](#8-recommendations)
+9. [References](#9-references)
 
 ---
 
@@ -368,7 +370,84 @@ The 2B model brings total to ~1.75 GB — still well under the 3 GB limit and fe
 
 ---
 
-## 6. Recommendations
+## 6. Voice Pipeline Frameworks
+
+### The Question
+
+Should we use an existing voice AI framework (LiveKit, Pipecat, etc.) instead of building our own pipeline? The goal is a minimal yet robust way to run fully local voice AI on iOS.
+
+### Server-Side Frameworks (Not Compatible)
+
+Every major voice AI framework is server-side Python/Node.js. Their iOS SDKs are thin WebRTC/WebSocket clients that stream audio to a remote server — the opposite of fully local.
+
+| Framework | Architecture | iOS SDK? | Why It Doesn't Work |
+|---|---|---|---|
+| **LiveKit Agents** | Python server + WebRTC | Client only | iOS is a thin audio endpoint. All intelligence runs on servers. No local inference support. |
+| **Pipecat** | Python asyncio + WebRTC | Client only | Same — iOS SDK connects to Python server. "Local transport" is PyAudio+Tkinter on desktop. |
+| **Vapi** | Cloud platform | Client only | Cloud-first. "On-premise" = your own AWS, not on-device. Per-minute pricing. |
+| **Ultravox** | Cloud multimodal LLM | None | Smallest model is 8B params — won't fit in iPhone memory (~3 GB limit). |
+
+### On-Device Alternatives
+
+| Option | Full Pipeline? | Barge-in? | AEC? | Open Source? | Verdict |
+|---|---|---|---|---|---|
+| **Locus (current stack)** | Yes (hand-built) | Yes | Platform AEC | N/A | **Best option — keep building** |
+| **mlx-audio-swift VoicePipeline** | Yes (has pipeline class) | Unclear | No | Yes | Worth monitoring; uses GPU (contention with LLM) |
+| **Picovoice** | Yes (Cheetah+picoLLM+Orca) | Yes (Cobra VAD) | Partial | No ($6k/yr) | Only complete solution, but commercial and closed-source |
+| **WhisperKit + TTSKit** | Components only | No | No | Yes | Best-in-class CoreML components, no orchestration |
+| **speech-swift** | Partial (macOS demo) | No | Noise suppression | Yes | Has DeepFilterNet3; demo targets macOS with large models |
+| **FluidAudio** | Components only | No | No | Yes | What we use — no pipeline orchestrator planned |
+| **whisper.cpp + llama.cpp** | Must build yourself | Must build | No | Yes | Mature individually but no pipeline, no TTS, no EOU detection |
+
+### Key Findings
+
+**mlx-audio-swift** is the most interesting alternative — it has a `VoicePipeline` class that integrates STT + response generator + TTS. However, it uses MLX/Metal for all inference, which means GPU contention with llama.cpp (the same problem we migrated away from). Worth monitoring as it matures.
+
+**Picovoice** is the only complete on-device solution (STT + LLM + TTS + VAD), but it's proprietary ($6,000/yr commercial), closed-source, and their models may be less capable than the open-source alternatives we use.
+
+**No framework provides the full package we need** — fully local, open-source, Swift-native, with barge-in, echo cancellation, and high-quality models. Building our own pipeline on top of FluidAudio + llama.cpp remains the best approach.
+
+---
+
+## 7. Patterns to Adopt from Pipecat/LiveKit
+
+Even though these frameworks can't run on iOS, their architectural patterns are the gold standard for voice AI pipelines.
+
+### 7.1 Typed Frame System
+
+Replace raw callbacks with typed events for composability and debugging:
+
+```
+AudioInputFrame, TranscriptionFrame, LLMTokenFrame, TTSAudioFrame, InterruptionFrame
+```
+
+System frames (like `InterruptionFrame`) get **priority processing** — they bypass queues and are handled immediately. Data frames are cancellable.
+
+### 7.2 Priority-Based Interruption
+
+Pipecat chunks TTS output into **10ms audio segments**. When an `InterruptionFrame` arrives, it takes effect within one chunk (~10ms). Our current approach sends whole sentences to TTS, so interruption granularity is at the sentence level.
+
+### 7.3 Configurable Turn-Start Strategies
+
+Pipecat supports multiple strategies for deciding when a user turn starts:
+- **VAD-only** — any speech triggers interruption
+- **Min words** — wait for N transcribed words (we use 2)
+- **Transcription-based** — wait for meaningful content
+- **Wake phrase** — require a specific phrase
+
+Our 2-word threshold is a good pragmatic choice that filters echo fragments.
+
+### 7.4 Bot Speaking State Tracking
+
+Pipecat tracks `_bot_speaking` state and uses `BOT_VAD_STOP_SECS` (0.35s delay) to avoid self-interruption from echo. The bot's output transport signals the input transport about speaking state, creating a feedback loop that suppresses false VAD triggers.
+
+### 7.5 AEC Warmup Period
+
+LiveKit uses a 3-second `aec_warmup_duration` — interruptions are disabled while the acoustic echo canceller adapts to the room. We rely on iOS platform AEC (`.voiceChat` mode) which handles this automatically, but could add a manual warmup if false interruptions are a problem.
+
+---
+
+## 8. Recommendations
 
 ### Priority 1: LLM Model Upgrade (Biggest Impact)
 
@@ -398,7 +477,7 @@ Migrate from Moonshine to Parakeet EOU 120M. This:
 
 ---
 
-## 7. References
+## 9. References
 
 ### Qwen3.5-0.8B
 
@@ -436,3 +515,25 @@ Migrate from Moonshine to Parakeet EOU 120M. This:
 
 - Original model: https://github.com/niclas-music/PocketTTS
 - MLX port: https://huggingface.co/mlx-community/pocket-tts
+
+### Voice Pipeline Frameworks
+
+- LiveKit Agents: https://docs.livekit.io/agents/overview/
+- LiveKit Agents GitHub: https://github.com/livekit/agents
+- LiveKit Swift Client SDK: https://github.com/livekit/client-sdk-swift
+- Pipecat: https://github.com/pipecat-ai/pipecat
+- Pipecat Interruptions: https://docs.pipecat.ai/guides/features/interruptions
+- Pipecat iOS Client: https://github.com/pipecat-ai/pipecat-client-ios
+- Vapi: https://vapi.ai/
+- Ultravox: https://github.com/fixie-ai/ultravox
+
+### On-Device Alternatives
+
+- mlx-audio-swift (Blaizzy): https://github.com/Blaizzy/mlx-audio-swift
+- speech-swift (soniqo): https://github.com/soniqo/speech-swift
+- WhisperKit: https://github.com/argmaxinc/WhisperKit
+- Picovoice: https://picovoice.ai/
+- Picovoice Orca TTS: https://picovoice.ai/platform/orca/
+- whisper.cpp: https://github.com/ggml-org/whisper.cpp
+- llama.cpp: https://github.com/ggml-org/llama.cpp
+- MLX Swift Examples: https://github.com/ml-explore/mlx-swift-examples
