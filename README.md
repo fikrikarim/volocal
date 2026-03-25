@@ -6,7 +6,7 @@ STT → LLM → TTS, streaming in real-time on your iPhone.
 
 > **Note:** This is a work in progress. Expect bugs.
 
-<video src="assets/volocal.mp4" controls></video>
+[![Demo video](assets/thumbnail.jpg)](https://www.fikrikarim.com/volocal/volocal.mp4)
 
 # Why?
 
