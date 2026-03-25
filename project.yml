@@ -17,7 +17,8 @@ packages:
     url: https://github.com/mattt/llama.swift.git
     from: "2.0.0"
   FluidAudio:
-    path: ../FluidAudio
+    url: https://github.com/fikrikarim/FluidAudio.git
+    branch: main
 
 targets:
   Volocal:

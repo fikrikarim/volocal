@@ -26,14 +26,11 @@ Fully local voice AI assistant for iOS. Everything runs on-device — no cloud, 
 - iPhone with A16 chip or later (iPhone 15+)
 - [Xcode 16+](https://developer.apple.com/xcode/)
 - [XcodeGen](https://github.com/yonaskolb/XcodeGen) — `brew install xcodegen`
-- [FluidAudio](https://github.com/FluidAudio/FluidAudio) — cloned as a sibling directory (see below)
-
 ## Getting Started
 
-1. **Clone the repos:**
+1. **Clone the repo:**
    ```bash
-   git clone https://github.com/nicklama/volocal.git
-   git clone https://github.com/nicklama/FluidAudio.git  # must be sibling directory
+   git clone https://github.com/fikrikarim/volocal.git
    ```
 
 2. **Generate the Xcode project:**

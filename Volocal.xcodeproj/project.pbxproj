@@ -32,7 +32,6 @@
 /* Begin PBXFileReference section */
 		0043CAD5AC8C2FE722C4C74C /* PipelineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PipelineView.swift; sourceTree = "<group>"; };
 		174A173A569CA4BF546109AC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		22F3D8E767307B1FEDAB6091 /* FluidAudio */ = {isa = PBXFileReference; lastKnownFileType = folder; name = FluidAudio; path = ../FluidAudio; sourceTree = SOURCE_ROOT; };
 		2315FEB668579CE9B2410109 /* LLMManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LLMManager.swift; sourceTree = "<group>"; };
 		291266CACA92E5C922EAEAD6 /* ModelRegistry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelRegistry.swift; sourceTree = "<group>"; };
 		2B6B189BB680EF1C79BCE706 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
@@ -115,18 +114,9 @@
 		5FCBF96685D02E8F557BB59C = {
 			isa = PBXGroup;
 			children = (
-				6A6557F0F633AB37555311E5 /* Packages */,
 				E0C0F140D85FD98F4070DD2E /* Volocal */,
 				72B210265CD5ECF02C57DCCF /* Products */,
 			);
-			sourceTree = "<group>";
-		};
-		6A6557F0F633AB37555311E5 /* Packages */ = {
-			isa = PBXGroup;
-			children = (
-				22F3D8E767307B1FEDAB6091 /* FluidAudio */,
-			);
-			name = Packages;
 			sourceTree = "<group>";
 		};
 		72B210265CD5ECF02C57DCCF /* Products */ = {
@@ -239,8 +229,8 @@
 			mainGroup = 5FCBF96685D02E8F557BB59C;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				F9BC54FADCF27BA2C5B3D25A /* XCRemoteSwiftPackageReference "FluidAudio" */,
 				A90BE892303E2C7C9FA62830 /* XCRemoteSwiftPackageReference "llama.swift" */,
-				84B59A96CEA61B0356FCD461 /* XCLocalSwiftPackageReference "../FluidAudio" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 72B210265CD5ECF02C57DCCF /* Products */;
@@ -477,13 +467,6 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		84B59A96CEA61B0356FCD461 /* XCLocalSwiftPackageReference "../FluidAudio" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../FluidAudio;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCRemoteSwiftPackageReference section */
 		A90BE892303E2C7C9FA62830 /* XCRemoteSwiftPackageReference "llama.swift" */ = {
 			isa = XCRemoteSwiftPackageReference;
@@ -491,6 +474,14 @@
 			requirement = {
 				kind = upToNextMajorVersion;
 				minimumVersion = 2.0.0;
+			};
+		};
+		F9BC54FADCF27BA2C5B3D25A /* XCRemoteSwiftPackageReference "FluidAudio" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/fikrikarim/FluidAudio.git";
+			requirement = {
+				branch = main;
+				kind = branch;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
@@ -503,6 +494,7 @@
 		};
 		85D4C9D7DD1C1EDD76869C82 /* FluidAudio */ = {
 			isa = XCSwiftPackageProductDependency;
+			package = F9BC54FADCF27BA2C5B3D25A /* XCRemoteSwiftPackageReference "FluidAudio" */;
 			productName = FluidAudio;
 		};
 /* End XCSwiftPackageProductDependency section */
