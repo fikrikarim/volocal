@@ -48,12 +48,7 @@ enum ModelRegistry {
 
     static let llmFilename = "Qwen_Qwen3.5-2B-Q4_K_S.gguf"
 
-    #if DEBUG
-    // For development: serve models locally via scripts/serve-models.sh
-    static let llmBaseURL = "http://192.168.0.180:8080"
-    #else
     static let llmBaseURL = "https://huggingface.co/bartowski/Qwen_Qwen3.5-2B-GGUF/resolve/main"
-    #endif
 
     static var llmDownloadURL: String {
         "\(llmBaseURL)/\(llmFilename)"
