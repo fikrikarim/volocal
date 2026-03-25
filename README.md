@@ -97,6 +97,7 @@ Both pulled in via SPM.
 ## TODO
 
 - [ ] Add [Apple Foundation Models](https://developer.apple.com/documentation/FoundationModels) as an LLM option (iOS 26+)
+- [ ] Android support
 
 ## Acknowledgements
 
