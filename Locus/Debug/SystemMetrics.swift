@@ -1,22 +1,30 @@
 import Foundation
+import Metal
 import os
 
 private let logger = Logger(subsystem: "com.locus.app", category: "metrics")
 
-/// Tracks app memory and CPU usage in real time, with per-component memory snapshots.
+/// Tracks app memory, GPU memory, CPU usage, and thermal state in real time.
 @MainActor
 final class SystemMetrics: ObservableObject {
     @Published var memoryMB: Double = 0
+    @Published var gpuMemoryMB: Double = 0
     @Published var cpuPercent: Double = 0
-    @Published var componentMemory: [String: Double] = [:]  // component name → MB used
-    @Published var isVisible: Bool = true
+    @Published var thermalState: ProcessInfo.ThermalState = .nominal
+    @Published var componentMemory: [String: Double] = [:]
 
     private var timer: Timer?
+    private let metalDevice = MTLCreateSystemDefaultDevice()
+
+    private var appBaselineMemory: Double = 0
+    private var lastSnapshotMemory: Double = 0
 
     init() {}
 
     func startMonitoring(interval: TimeInterval = 1.0) {
         update()
+        appBaselineMemory = Self.appMemoryMB()
+        lastSnapshotMemory = appBaselineMemory
         timer = Timer.scheduledTimer(withTimeInterval: interval, repeats: true) { [weak self] _ in
             Task { @MainActor in
                 self?.update()
@@ -29,36 +37,64 @@ final class SystemMetrics: ObservableObject {
         timer = nil
     }
 
-    /// Call before loading a component to snapshot baseline memory.
     func beginTracking(_ component: String) {
-        let mem = Self.appMemoryMB()
-        componentMemory[component] = -mem  // store negative baseline, will add final later
-        logger.info("[\(component)] loading... baseline: \(mem, format: .fixed(precision: 1)) MB")
+        lastSnapshotMemory = Self.appMemoryMB()
+        componentMemory[component] = -1
+        let snap = lastSnapshotMemory
+        logger.info("[\(component)] loading... snapshot: \(snap, format: .fixed(precision: 1)) MB")
     }
 
-    /// Call after loading a component to record its memory delta.
     func endTracking(_ component: String) {
         let mem = Self.appMemoryMB()
-        let baseline = -(componentMemory[component] ?? 0)
-        let delta = mem - baseline
+        let delta = mem - lastSnapshotMemory
         componentMemory[component] = max(0, delta)
+        lastSnapshotMemory = mem
         logger.info("[\(component)] loaded. delta: \(delta, format: .fixed(precision: 1)) MB, total app: \(mem, format: .fixed(precision: 1)) MB")
     }
 
-    /// Remove tracking for a component (e.g. when unloaded).
     func clearTracking(_ component: String) {
         componentMemory.removeValue(forKey: component)
-        logger.info("[\(component)] unloaded")
+    }
+
+    var trackedMemoryMB: Double {
+        componentMemory.values.filter { $0 > 0 }.reduce(0, +)
+    }
+
+    var otherMemoryMB: Double {
+        max(0, memoryMB - appBaselineMemory - trackedMemoryMB)
+    }
+
+    var baselineMemoryMB: Double { appBaselineMemory }
+
+    var thermalStateLabel: String {
+        switch thermalState {
+        case .nominal: return "Nominal"
+        case .fair: return "Fair"
+        case .serious: return "Serious"
+        case .critical: return "Critical"
+        @unknown default: return "Unknown"
+        }
+    }
+
+    var thermalStateColor: String {
+        switch thermalState {
+        case .nominal: return "green"
+        case .fair: return "yellow"
+        case .serious: return "orange"
+        case .critical: return "red"
+        @unknown default: return "gray"
+        }
     }
 
     // MARK: - Private
 
     private func update() {
         memoryMB = Self.appMemoryMB()
+        gpuMemoryMB = Double(metalDevice?.currentAllocatedSize ?? 0) / (1024 * 1024)
         cpuPercent = Self.appCPUPercent()
+        thermalState = ProcessInfo.processInfo.thermalState
     }
 
-    /// App physical footprint in MB via task_vm_info (matches Xcode's memory gauge).
     static func appMemoryMB() -> Double {
         var info = task_vm_info_data_t()
         var count = mach_msg_type_number_t(MemoryLayout<task_vm_info_data_t>.size / MemoryLayout<natural_t>.size)
@@ -71,7 +107,6 @@ final class SystemMetrics: ObservableObject {
         return Double(info.phys_footprint) / (1024 * 1024)
     }
 
-    /// App CPU usage as a percentage via thread_info.
     static func appCPUPercent() -> Double {
         var threadList: thread_act_array_t?
         var threadCount: mach_msg_type_number_t = 0

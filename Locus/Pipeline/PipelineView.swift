@@ -16,20 +16,26 @@ struct PipelineView: View {
                                     .id(message.id)
                             }
 
-                            // Show current partial response
-                            if !pipeline.currentResponse.isEmpty && pipeline.state == .processing {
+                            // Show current partial response (visible while LLM generates and TTS speaks)
+                            if !pipeline.currentResponse.isEmpty && (pipeline.state == .processing || pipeline.state == .speaking) {
                                 MessageBubble(message: ConversationMessage(
                                     role: .assistant,
-                                    text: pipeline.currentResponse + "..."
+                                    text: pipeline.currentResponse
                                 ))
                             }
+
+                            // Scroll anchor
+                            Color.clear.frame(height: 1).id("bottom")
                         }
                         .padding()
                     }
                     .onChange(of: pipeline.conversationHistory.count) {
-                        if let last = pipeline.conversationHistory.last {
-                            proxy.scrollTo(last.id, anchor: .bottom)
+                        withAnimation {
+                            proxy.scrollTo("bottom", anchor: .bottom)
                         }
+                    }
+                    .onChange(of: pipeline.currentResponse) {
+                        proxy.scrollTo("bottom", anchor: .bottom)
                     }
                 }
 
@@ -77,15 +83,6 @@ struct PipelineView: View {
                 .padding(.vertical, 20)
             }
             .navigationTitle("Locus")
-            .toolbar {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button {
-                        metrics.isVisible.toggle()
-                    } label: {
-                        Image(systemName: metrics.isVisible ? "chart.bar.fill" : "chart.bar")
-                    }
-                }
-            }
         }
     }
 

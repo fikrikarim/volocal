@@ -207,6 +207,9 @@ final class VoicePipeline: ObservableObject {
                 conversationHistory.append(assistantMessage)
                 trimHistory()
             }
+            // Clear so the partial response bubble disappears
+            // (the response is now in conversationHistory)
+            currentResponse = ""
 
             // Wait for all queued sentences to finish speaking (with timeout)
             let waitStart = CFAbsoluteTimeGetCurrent()
