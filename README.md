@@ -10,7 +10,7 @@ Fully local voice AI assistant for iOS. Everything runs on-device — no cloud, 
 - **Real-time voice pipeline** — speak naturally and get voice responses with low latency
 - **Barge-in support** — interrupt the AI mid-sentence by speaking
 - **Echo cancellation** — Voice Processing AEC prevents the AI from hearing its own output
-- **Automatic model download** — first launch downloads all models (~1.5 GB) with per-model progress
+- **Automatic model download** — first launch downloads all models (~2.3 GB) with per-model progress
 
 ## Why This Stack
 
@@ -30,9 +30,9 @@ We originally used [mlx-audio-swift](https://github.com/Blaizzy/mlx-audio-swift)
 
 | Component | Model | Size | Runtime |
 |-----------|-------|------|---------|
-| STT | [Parakeet EOU 320](https://huggingface.co/FluidInference/parakeet-realtime-eou-120m-coreml) | ~200 MB | CoreML (ANE) |
+| STT | [Parakeet EOU 320](https://huggingface.co/FluidInference/parakeet-realtime-eou-120m-coreml) | ~450 MB | CoreML (ANE) |
 | LLM | [Qwen3.5-2B Q4_K_S](https://huggingface.co/bartowski/Qwen_Qwen3.5-2B-GGUF) | ~1.26 GB | llama.cpp (Metal GPU) |
-| TTS | [PocketTTS](https://huggingface.co/FluidInference/pocket-tts-coreml) | ~100 MB | CoreML (ANE) |
+| TTS | [PocketTTS](https://huggingface.co/FluidInference/pocket-tts-coreml) | ~600 MB | CoreML (ANE) |
 
 - **Parakeet EOU** over Moonshine/Whisper: 4.87% WER (vs 6.65% Moonshine) at half the parameters, with native end-of-utterance detection built into the model (no separate VAD needed).
 - **Qwen3.5-2B** over 0.8B: MMLU-Pro nearly doubles (29.7 → 55.3). The speed cost (~70 → ~32 tok/s) adds ~0.9s to a typical response — worth it for noticeably better conversation quality. Q4_K_S at 1.26 GB fits comfortably in the ~3 GB iOS memory budget.
@@ -70,7 +70,7 @@ Total memory footprint: ~1.2 GB (well under the ~3 GB iOS app limit on iPhone 15
 
 4. **Build and run** on a physical device (Neural Engine is not available in the simulator).
 
-5. On first launch, tap **Download All Models** to fetch the models (~1.5 GB over Wi-Fi recommended).
+5. On first launch, tap **Download All Models** to fetch the models (~2.3 GB over Wi-Fi recommended).
 
 ## Architecture
 

@@ -30,8 +30,8 @@ enum ModelRegistry {
         var sizeDescription: String {
             switch self {
             case .llm: return "~1.26 GB"
-            case .stt: return "~200 MB"
-            case .tts: return "~100 MB"
+            case .stt: return "~450 MB"
+            case .tts: return "~600 MB"
             }
         }
 
