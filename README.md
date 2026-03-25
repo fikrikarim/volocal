@@ -6,6 +6,8 @@ STT → LLM → TTS, streaming in real-time on your iPhone.
 
 > **Note:** This is a work in progress. Expect bugs.
 
+<video src="assets/volocal.mp4" controls></video>
+
 # Why?
 
 I'm [self-hosting a totally free voice AI](https://www.fikrikarim.com/bule-ai-initial-release/) on my home server to help people learn speaking English. It has tens to hundreds of monthly active users, and I've been thinking on how to keep it free while making it sustainable.
@@ -105,7 +107,7 @@ Both pulled in via SPM.
 ## TODO
 
 - [ ] Add [Apple Foundation Models](https://developer.apple.com/documentation/FoundationModels) as an LLM option (iOS 26+)
-- [ ] Android support
+- [ ] Android support (might be far in the future)
 
 ## Acknowledgements
 
