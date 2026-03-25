@@ -76,16 +76,6 @@ struct OnboardingView: View {
                         .padding(.horizontal)
                 }
 
-                #if DEBUG
-                Button("Skip (use placeholder data)") {
-                    modelManager.modelStates[.llm] = .downloaded
-                    modelManager.modelStates[.stt] = .downloaded
-                    modelManager.modelStates[.tts] = .downloaded
-                }
-                .font(.caption)
-                .foregroundStyle(.secondary)
-                #endif
-
                 Spacer().frame(height: 20)
             }
             .navigationTitle("")
