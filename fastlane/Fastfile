@@ -1,0 +1,58 @@
+default_platform(:ios)
+
+platform :ios do
+  before_each do
+    sh("which xcodegen > /dev/null 2>&1 || { echo 'xcodegen not found. Install with: brew install xcodegen'; exit 1; }")
+    sh("cd #{File.expand_path('..', Dir.pwd)} && xcodegen generate")
+  end
+
+  desc "Build the app for release (archive)"
+  lane :build do
+    gym(
+      project: "Volocal.xcodeproj",
+      scheme: "Volocal",
+      clean: true,
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "Volocal.ipa"
+    )
+  end
+
+  desc "Build and upload to TestFlight"
+  lane :beta do
+    gym(
+      project: "Volocal.xcodeproj",
+      scheme: "Volocal",
+      clean: true,
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "Volocal.ipa"
+    )
+
+    pilot(
+      ipa: "./build/Volocal.ipa",
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "Build, upload, and submit for App Store review"
+  lane :release do
+    gym(
+      project: "Volocal.xcodeproj",
+      scheme: "Volocal",
+      clean: true,
+      export_method: "app-store",
+      output_directory: "./build",
+      output_name: "Volocal.ipa"
+    )
+
+    deliver(
+      ipa: "./build/Volocal.ipa",
+      submit_for_review: true,
+      automatic_release: false,
+      force: true,
+      skip_metadata: true,
+      skip_screenshots: true
+    )
+  end
+end
