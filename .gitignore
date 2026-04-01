@@ -10,5 +10,16 @@ DerivedData/
 Volocal.xcodeproj/xcuserdata/
 Volocal.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
 
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots/**/*.png
+fastlane/test_output
+build/
+
+# Bundler
+vendor/bundle
+.bundle
+
 # macOS
 .DS_Store
