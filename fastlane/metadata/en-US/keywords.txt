@@ -1,0 +1,1 @@
+voice AI,local,offline,privacy,assistant,on-device,speech,private,no cloud,LLM

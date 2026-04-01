@@ -1,0 +1,38 @@
+Talk to an AI assistant that runs entirely on your iPhone. No cloud servers, no API keys, no subscriptions -- just real-time voice conversations powered by on-device intelligence.
+
+FULLY PRIVATE, FULLY LOCAL
+
+Every word you say stays on your device. Volocal runs three specialized AI models directly on your iPhone's hardware -- nothing is ever sent to the internet. After downloading the models on first launch, you never need a network connection again.
+
+REAL-TIME VOICE CONVERSATIONS
+
+Speak naturally and hear responses streamed back in real-time. Volocal uses a three-stage pipeline -- Speech-to-Text, Language Model, and Text-to-Speech -- all running simultaneously on different chips inside your phone for smooth, low-latency conversations.
+
+INTERRUPT ANYTIME
+
+Change your mind mid-sentence? Just start talking. Volocal supports barge-in with hardware echo cancellation, so the microphone stays active even while the assistant is speaking. No need to wait for it to finish.
+
+NO SUBSCRIPTIONS, NO API KEYS
+
+Volocal is completely free and open source. There are no in-app purchases, no subscriptions, and no hidden costs. Download the models once (~2.3 GB, Wi-Fi recommended) and you're set.
+
+HOW IT WORKS
+
+Volocal splits the workload across your iPhone's specialized processors:
+- Speech recognition (Parakeet EOU) runs on the Neural Engine
+- Language model (Qwen3.5-2B) runs on the GPU via Metal
+- Text-to-speech (PocketTTS) runs on the Neural Engine
+
+This separation means all three models can run at the same time without competing for resources, keeping conversations fluid and responsive.
+
+LIGHTWEIGHT
+
+Total runtime memory usage is approximately 1.2 GB, well within the limits of modern iPhones.
+
+REQUIREMENTS
+
+- iOS 17 or later
+- Physical device only (Neural Engine is not available in the Simulator)
+- ~2.3 GB of storage for model downloads on first launch
+
+Volocal is MIT licensed and open source. Built by Fikri Karim.
