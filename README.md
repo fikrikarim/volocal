@@ -26,17 +26,17 @@ So I decided to replicate the voice AI experience to fully run locally on my iPh
 
 ## Why this stack
 
-The hard part of running three models at once on a phone is that they all fight for the same hardware. We split them across different chips:
+The hard part of running three models at once on a phone is that they all fight for the same hardware. We spread the load across different compute units:
 
 | Component              | Chip          | Why                                                      |
 | ---------------------- | ------------- | -------------------------------------------------------- |
 | **STT** (Parakeet EOU) | Neural Engine | CoreML — leaves GPU and CPU free                         |
 | **LLM** (Qwen3.5-2B)   | GPU           | llama.cpp via Metal, gets the GPU to itself              |
-| **TTS** (PocketTTS)    | Neural Engine | CoreML — shares ANE with STT but they don't overlap much |
+| **TTS** (PocketTTS)    | CPU + GPU     | CoreML — ANE causes float16 artifacts in Mimi decoder    |
 
 We started with [mlx-audio-swift](https://github.com/Blaizzy/mlx-audio-swift) for TTS, which uses the GPU via MLX. That meant TTS and the LLM were both competing for Metal, causing dropouts and hangs during streaming. Similarly, we tried [Moonshine](https://github.com/usefulsensors/moonshine) for STT — a promising streaming model, but it also runs on GPU/CPU via ONNX Runtime, adding to the contention and using more memory.
 
-Moving STT and TTS to [FluidAudio](https://github.com/FluidInference/FluidAudio) (CoreML/Neural Engine) fixed the contention and significantly reduced memory usage.
+Moving STT to [FluidAudio](https://github.com/FluidInference/FluidAudio) (CoreML/Neural Engine) and TTS to FluidAudio (CoreML/CPU+GPU) fixed the contention and significantly reduced memory usage.
 
 ### Models
 
@@ -44,7 +44,7 @@ Moving STT and TTS to [FluidAudio](https://github.com/FluidInference/FluidAudio)
 | --------- | ------------------------------------------------------------------------------------------- | -------- | ----------------- |
 | STT       | [Parakeet EOU 320](https://huggingface.co/FluidInference/parakeet-realtime-eou-120m-coreml) | ~450 MB  | CoreML (ANE)      |
 | LLM       | [Qwen3.5-2B Q4_K_S](https://huggingface.co/bartowski/Qwen_Qwen3.5-2B-GGUF)                  | ~1.26 GB | llama.cpp (Metal) |
-| TTS       | [PocketTTS](https://huggingface.co/FluidInference/pocket-tts-coreml)                        | ~600 MB  | CoreML (ANE)      |
+| TTS       | [PocketTTS](https://huggingface.co/FluidInference/pocket-tts-coreml)                        | ~600 MB  | CoreML (CPU+GPU)  |
 
 Why these specifically:
 
