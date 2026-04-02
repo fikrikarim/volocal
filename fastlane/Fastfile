@@ -13,6 +13,7 @@ platform :ios do
       scheme: "Volocal",
       clean: true,
       export_method: "app-store",
+      export_xcargs: "-allowProvisioningUpdates",
       output_directory: "./build",
       output_name: "Volocal.ipa"
     )
@@ -25,6 +26,7 @@ platform :ios do
       scheme: "Volocal",
       clean: true,
       export_method: "app-store",
+      export_xcargs: "-allowProvisioningUpdates",
       output_directory: "./build",
       output_name: "Volocal.ipa"
     )
@@ -42,6 +44,7 @@ platform :ios do
       scheme: "Volocal",
       clean: true,
       export_method: "app-store",
+      export_xcargs: "-allowProvisioningUpdates",
       output_directory: "./build",
       output_name: "Volocal.ipa"
     )
