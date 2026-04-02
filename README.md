@@ -4,6 +4,8 @@ Fully local voice AI for iOS. No cloud, no API keys, no internet after setup.
 
 STT → LLM → TTS, streaming in real-time on your iPhone.
 
+[<img src="https://developer.apple.com/assets/elements/badges/download-on-the-app-store.svg" alt="Download on the App Store" height="50">](https://apps.apple.com/app/volocal/id6761493288)
+
 > **Note:** This is a work in progress. Expect bugs.
 
 [![Demo video](assets/thumbnail.jpg)](https://www.fikrikarim.com/volocal/volocal.mp4)
