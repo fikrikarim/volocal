@@ -11,6 +11,7 @@ Volocal.xcodeproj/xcuserdata/
 Volocal.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/
 
 # Fastlane
+.env
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots/**/*.png.tmp

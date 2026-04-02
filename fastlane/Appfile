@@ -1,2 +1,3 @@
 app_identifier("com.fikrikarim.volocal")
+apple_id(ENV["FASTLANE_USER"])
 team_id("FBS8R927D4")
