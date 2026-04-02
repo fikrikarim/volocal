@@ -22,6 +22,7 @@
 		A03EE7D67AD0A63FC7E16072 /* ModelRegistry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 291266CACA92E5C922EAEAD6 /* ModelRegistry.swift */; };
 		A179951230D12A847DE8C46F /* UnifiedModelManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA2740080E7653F6B3AA1C63 /* UnifiedModelManager.swift */; };
 		A54624B24553C2B4D565D249 /* VolocalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F00A9006F1E3E1FB283DCE59 /* VolocalApp.swift */; };
+		A680B8A61D166FB7C510DBD0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F5A949904EB0EA59094FD6C3 /* PrivacyInfo.xcprivacy */; };
 		BDFBC5D0A5A65CCAB16D2A8F /* VoicePipeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55BD8F6E3E50B75C4A76AC5C /* VoicePipeline.swift */; };
 		C6C96C7B54DAB0D2F18C5C6D /* TTSManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84AAB3650E87AF43D4BB88D6 /* TTSManager.swift */; };
 		E3D279E7690E83F7E5B16D6C /* LLMManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2315FEB668579CE9B2410109 /* LLMManager.swift */; };
@@ -51,6 +52,7 @@
 		F00A9006F1E3E1FB283DCE59 /* VolocalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VolocalApp.swift; sourceTree = "<group>"; };
 		F42124AFAD76D1721B0F69AA /* STTManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = STTManager.swift; sourceTree = "<group>"; };
 		F47F3DB48C0E4495EEF5445E /* SharedAudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedAudioEngine.swift; sourceTree = "<group>"; };
+		F5A949904EB0EA59094FD6C3 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,13 +86,6 @@
 				C792F48B773B8AB7FB665186 /* SystemMetrics.swift */,
 			);
 			path = Debug;
-			sourceTree = "<group>";
-		};
-		396D22277ED6D7F5740E4856 /* Resources */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Resources;
 			sourceTree = "<group>";
 		};
 		44A62F45AE2820BA006736A6 /* STT */ = {
@@ -149,6 +144,7 @@
 			children = (
 				2FCD459848B578953ED4DD1B /* Assets.xcassets */,
 				174A173A569CA4BF546109AC /* Info.plist */,
+				F5A949904EB0EA59094FD6C3 /* PrivacyInfo.xcprivacy */,
 				5E53B5479E5395EA7890B335 /* Volocal.entitlements */,
 				4AB318961DE2BFC1B733BAFD /* App */,
 				EA64CF9D2C8D5ED6A95026F0 /* Audio */,
@@ -156,7 +152,6 @@
 				8A606C4CF7342A374C0E3652 /* LLM */,
 				0E2568D678EC3CD9F996A932 /* Models */,
 				F82DEB9392D289613455F0BB /* Pipeline */,
-				396D22277ED6D7F5740E4856 /* Resources */,
 				44A62F45AE2820BA006736A6 /* STT */,
 				C61468C778D1F601D02541B1 /* TTS */,
 			);
@@ -215,6 +210,7 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					4B0D3CFCE1420835E634B20E = {
+						DevelopmentTeam = FBS8R927D4;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -248,6 +244,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F2832130B64B921A67A30BE9 /* Assets.xcassets in Resources */,
+				A680B8A61D166FB7C510DBD0 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,15 +286,16 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FBS8R927D4;
 				INFOPLIST_FILE = Volocal/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.volocal.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fikrikarim.volocal;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -309,15 +307,16 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = FBS8R927D4;
 				INFOPLIST_FILE = Volocal/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.volocal.app;
+				PRODUCT_BUNDLE_IDENTIFIER = com.fikrikarim.volocal;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = "1,2";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Debug;
 		};
